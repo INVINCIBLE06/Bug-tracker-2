@@ -26,4 +26,6 @@ module.exports = function(app)
     // The below route is for logout of a user. Based on a userId
     app.get('/user/activity/log/:id', verifyparams.UserIdIsCorrectInParams, authcontroller.activitylogs);
 
+    app.post('/user/email/verfication', authcontroller.emailVerfication);
+
 }

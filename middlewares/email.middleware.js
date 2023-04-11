@@ -2,7 +2,6 @@
 // we have used middleware for validation of user input data in that validation there is a check for email
 // Which is performed in this file
 
-const validator = require('email-validator');  // Importing the email-validator library and assigning it to validator variable
 
 module.exports.emailvalidation = async (req, res, next) => 
 {
@@ -10,7 +9,7 @@ module.exports.emailvalidation = async (req, res, next) =>
     // console.log(req.body)
 
     //checking
-    if (validator.validate(email)) // Here the checking of the email value is done
+    if (isvalidEmail(email)) // Here the checking of the email value is done
     {
         next();  // If correct then next()
     } 
@@ -20,5 +19,30 @@ module.exports.emailvalidation = async (req, res, next) =>
         ({
             message: "Invalid email"   // Or error message
         });
+    }
+};
+
+
+
+const isvalidEmail = (email) => 
+{
+    const regex = (/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?$/);    
+    if (regex.test(email)) 
+    {
+        const domain = email.split('@')[1]; // get domain name after '@' symbol
+        const domainParts = domain.split('.'); // split domain name by '.' separator
+        //console.log(domainParts); // output: ['gmail', 'com', 'com']
+        if(domainParts[1] === domainParts[2])
+            {
+                console.log('Both the domain names are same. It is not a valid email');
+            }
+            else
+            {
+                console.log('Valid Email');
+            }
+    } 
+    else
+    {
+        console.log('Invalid Email');
     }
 };

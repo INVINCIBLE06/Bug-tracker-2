@@ -1,7 +1,15 @@
 const user = require('../models/user.model'); // Importing the user model details and intializing it into user varibale 
-const bcrypt = require('bcryptjs');  // importing the bcryptjs libraruy
+const authConfig = require('../configs/auth.config');
 const con = require('../configs/db.config'); // importing the database details
 const constants = require('../utils/constants'); // importing the constants file details
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+
+
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');  // importing the bcryptjs library
+
+
 /**
  * Below function is used for add or registering the nes user
  */
@@ -22,7 +30,7 @@ exports.AddNewUser = async(req, res, next)=>
     {   // if user added then below if code will be executed other wisee else part
         return res.status(400).send
             ({
-                success : true,
+                success : false,
                 code : 400,
                 message : "Signup failed ! Role is not available",
             }) 
@@ -76,6 +84,8 @@ exports.signin = (req, res) =>
                                             { // if the procedured executed successfully then this if block code is executed
                                                 if(resultlgg.length != 0)
                                                 {
+                                                    const token = jwt.sign({id : result[0].User_Id, purpose: "authentication"}, authConfig.secret, {expiresIn : process.env.JWT_TIME}); // expiery time is 24 hours
+                                                    // console.log(token)
                                                     console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
                                                     console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
                                                     return res.status(200).send
@@ -83,11 +93,12 @@ exports.signin = (req, res) =>
                                                         success : true,
                                                         code : 200,
                                                         message : "Signin Successfully",
-                                                        // date : 
-                                                        //         {
-                                                        //             users : result, 
-                                                        //             module : resultMID
-                                                        //         }
+                                                        date : 
+                                                                {
+                                                                    users : result,
+                                                                    access : token, 
+                                                                    // module : resultMID
+                                                                }
                                                     });
                                                 }
                                                 else // if the procedured executed unsuccessfully then this else block code is executed
@@ -230,3 +241,70 @@ exports.activitylogs = (req, res) =>
         }
     });
 };
+
+
+/**
+ * Below function. I am writing is for email validation at the time registration it will be checked by sending a
+ * OTP or verification link.  
+ */
+
+exports.emailVerfication = (req, res, next) =>
+{
+    const generateOTP = () => 
+    {
+        return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP
+    };
+    
+    const otp = generateOTP(); // call this function to generate OTP
+    
+    console.log(otp);
+
+    const transporter = nodemailer.createTransport
+    ({
+        service : 'Gmail', // replace with your email service provider
+        auth : 
+        {
+            user : process.env.adminemail, // replace with your email address
+            pass : process.env.password // replace with your email password
+        }
+    });
+
+    const sendVerificationEmail = (to, otp) => 
+    {
+        const mailOptions = 
+        {
+            from : process.env.adminemail, // replace with your email address
+            to : to, // recipient's email address
+            subject: 'Email Verification',
+            text: `Your OTP for email verification is: ${otp}`
+        };
+      
+        transporter.sendMail(mailOptions, (error, info) => 
+        {
+            if (error) 
+            {
+                console.error('Error sending email:', error);
+            } 
+            else
+            {
+                console.log('Email sent:', info.response);
+            }
+        });
+    };      
+    sendVerificationEmail('saurabhpande4@gmail.com', otp); // call this function to send the email
+
+    // Assuming the user's provided OTP is stored in a variable called 'userOTP'
+    // if (userOTP === otp) 
+    // {
+    //     console.log('OTP matched. Email verified successfully!');
+    // }
+    // else
+    // {
+    //     console.log('OTP did not match. Email verification failed.');
+    // }
+  
+
+}
+
+
+   

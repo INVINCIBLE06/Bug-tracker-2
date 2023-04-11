@@ -1,6 +1,7 @@
 const user = require('../models/user.model'); //importing the use module and assign it to user variable 
 const bcrypt = require('bcryptjs'); // importing the bcrypt js for hashing our password
 const constants = require('../utils/constants');
+
 // The below function is for forgot password.
 exports.ForgotPassword = async(req, res, next)=>
 {

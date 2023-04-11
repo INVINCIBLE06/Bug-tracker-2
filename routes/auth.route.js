@@ -23,9 +23,12 @@ module.exports = function(app)
      * email and password will be validated and then it will be able to signin
      */
     app.post('/logout/exist/user/:id', verifyparams.UserIdIsCorrectInParams, authcontroller.SignOut);
+
     // The below route is for logout of a user. Based on a userId
     app.get('/user/activity/log/:id', verifyparams.UserIdIsCorrectInParams, authcontroller.activitylogs);
 
-    app.post('/user/email/verfication', authcontroller.emailVerfication);
+    app.post('/user/send/otp', emailvalidation, authcontroller.sendOTPcodeToEmailForVerification);
+
+    app.post('/user/check/otp', authcontroller.CheckOTP);
 
 }

@@ -178,17 +178,17 @@ module.exports = async function()
                                                                                                         console.log(' #### insertintotickets_activities stored procedure successfully created #### ');
                                                                                                         // the below query is for the creating the checkticketsexiparation event
                                                                                                         let eventCre1 = `CREATE EVENT checkticketsexiparation
-                                                                                                                        ON SCHEDULE EVERY 5 SECOND
-                                                                                                                        ON COMPLETION PRESERVE
-                                                                                                                        DO
-                                                                                                                        BEGIN
-                                                                                                                        UPDATE tickets t SET t.priority = '${constants.priority.urgent}'
-                                                                                                                        WHERE (SELECT DATEDIFF(tickets.created_at, tickets.expired_at)) > '${constants.tickets_expiration_deadline_day}' 
-                                                                                                                        AND t.priority = '${constants.priority.normal}' 
-                                                                                                                        AND t.status = '${constants.status.open}'
-                                                                                                                        OR t.status = '${constants.status.pending}'
-                                                                                                                        OR t.status = '${constants.status.working}'; 
-                                                                                                                        END`
+                                                                                                                         ON SCHEDULE EVERY 5 SECOND
+                                                                                                                         ON COMPLETION PRESERVE
+                                                                                                                         DO
+                                                                                                                         BEGIN
+                                                                                                                         UPDATE tickets t SET t.priority = '${constants.priority.urgent}'
+                                                                                                                         WHERE (SELECT DATEDIFF(tickets.created_at, tickets.expired_at)) > '${constants.tickets_expiration_deadline_day}' 
+                                                                                                                         AND t.priority = '${constants.priority.normal}' 
+                                                                                                                         AND t.status = '${constants.status.open}'
+                                                                                                                         OR t.status = '${constants.status.pending}'
+                                                                                                                         OR t.status = '${constants.status.working}'; 
+                                                                                                                         END`
                                                                                                         con.query(eventCre1, (err, resultm12) => // executing the above query
                                                                                                         {
                                                                                                             if(resultm12.length != 0) // If the checkticketsexiparation event is successfully created then this if block code
@@ -274,20 +274,20 @@ module.exports = async function()
                                                                                                                                                                     if(resultm18.length != 0)
                                                                                                                                                                     {
                                                                                                                                                                         console.log(" #### otpstores table created successfully ####");
-                                                                                                                                                                        let ctryQuery10 = `CREATE TABLE passwordcounts(
-                                                                                                                                                                            id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-                                                                                                                                                                            user_Id INT,
-                                                                                                                                                                            FOREIGN KEY (user_id) REFERENCES users(id),
-                                                                                                                                                                            count INT,
-                                                                                                                                                                            status ENUM('${constants.status.active}', '${constants.status.inactive}') DEFAULT '${constants.status.active}',
-                                                                                                                                                                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                                                                                                                                                            updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP 
-                                                                                                                                                                            )`;
+                                                                                                                                                                        let ctryQuery10 = ` CREATE TABLE login_incorrect_attempts(
+                                                                                                                                                                                            id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                                                                                                                                                                                            user_Id INT,
+                                                                                                                                                                                            FOREIGN KEY (user_id) REFERENCES users(id),
+                                                                                                                                                                                            incorrect_count INT,
+                                                                                                                                                                                            status ENUM('${constants.status.active}', '${constants.status.inactive}') DEFAULT '${constants.status.active}',
+                                                                                                                                                                                            last_attempt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                                                                                                                                                            blocked_till DATETIME DEFAULT NULL
+                                                                                                                                                                                            )`;
                                                                                                                                                                         con.query(ctryQuery10, (err, resultm19) =>
                                                                                                                                                                         {
                                                                                                                                                                             if(resultm19.length != 0)
                                                                                                                                                                             {
-                                                                                                                                                                                console.log(" #### passwordcounts table created successfully ####");
+                                                                                                                                                                                console.log(" #### login_incorrect_attempts table created successfully ####");
                                                                                                                                                                                 console.log(' #### All Stored procedured are created #### ');
                                                                                                                                                                                 console.log(' #### All Events are created #### ');
                                                                                                                                                                                 console.log(' #### All tables are created #### ');
@@ -313,7 +313,7 @@ module.exports = async function()
                                                                                                                                                                             }
                                                                                                                                                                             else
                                                                                                                                                                             {
-                                                                                                                                                                                return console.log(' #### Error happen while creating the passwordcounts table #### ', err.message);
+                                                                                                                                                                                return console.log(' #### Error happen while creating the login_incorrect_attempts table #### ', err.message);
                                                                                                                                                                             }
                                                                                                                                                                         });
                                                                                                                                                                     }

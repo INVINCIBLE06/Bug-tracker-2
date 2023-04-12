@@ -1,6 +1,7 @@
 const con = require("../configs/db.config");  // importing the database details
 const constants = require('../utils/constants'); // Importing the constants file. This file contain the constant details
 const time = require('../models/ticket.model')
+const fetch = require('./commonfetchingfunction')
 
 module.exports = class operations
 {
@@ -43,7 +44,7 @@ module.exports = class operations
                 }
                 else if(result[0].incorrect_count == (constants.password_protection_policy_numbers.number_of_incorrect_password_attempt - 1))
                 {
-                    let upQuery = `UPDATE login_incorrect_attempts l SET l.last_attempt = '${time.nowd()}' , l.blocked_till = '${time.convertDatePickerTimeToMySQLTime(time.DAYADD(constants.password_protection_policy_numbers.user_blocked_for_days))}' , l.incorrect_count = '${(result[0].incorrect_count) + 1}' WHERE l.user_Id = '${id}'`;
+                    let upQuery = `UPDATE login_incorrect_attempts l SET l.last_attempt = '${time.nowd()}' , l.blocked_till = '${time.convertDatePickerTimeToMySQLTime(time.DAYADD(constants.password_protection_policy_numbers.user_blocked_for_days))}' , l.incorrect_count = '${(result[0].incorrect_count) + 1}' WHERE l.user_Id = '${id}' AND l.status = '${constants.status.active}'`;
                     con.query(upQuery, (err, result1) =>
                     {
                         if(result1.length != 0)
@@ -63,5 +64,56 @@ module.exports = class operations
             });
         });
     };
+
+    static async updateStatusaftercorrectpasswordentered(id)
+    {
+        return new Promise(async (resolve, reject) =>
+        {
+            try
+            {
+                let CheckWhetherIncorrectPasswordEnteredOrNot =  await fetch.GetTheCountOfIncorrectPasswordEventHappend(id);
+                if(CheckWhetherIncorrectPasswordEnteredOrNot.length != 0)
+                {
+                    let upQuery = `UPDATE login_incorrect_attempts l SET l.status = '${constants.status.inactive}' WHERE l.blocked_till IS NULL AND l.user_Id = '${id}'`;
+                    con.query(upQuery, (err, result1) =>
+                    {
+                        if(result1.length != 0)
+                        {
+                            console.log(` #### Since the user have entered correct password after incorrect. It is updated in the table #### `);
+                            resolve(result1)
+                        }
+                        // else if(result1.length == 0)
+                        // {
+                        //     console.log(` #### Since the user haven't attempted any incorrect entry of password. So no change can be made in the table #### `);
+                        //     resolve(result1)                     
+                        // }
+                        else
+                        {
+                            console.log(` #### Error happen while updating the data in the login_incorrect_attempts. When user entered the correect password  ####  `, err.message);
+                            reject(err)
+                        }
+                    });
+                }
+                else if(CheckWhetherIncorrectPasswordEnteredOrNot.length == 0)
+                {
+                    console.log(` #### Since the user haven't attempted any incorrect entry of password. So no change can be made in the table #### `);
+                    resolve(true);
+                }
+                else
+                {
+                    console.log("Not present");
+                    resolve(false)
+                }
+            }
+            catch(error)
+            {
+                console.log(" #### Error happen while checking whether there is any ongoing streak of entering incorrect password in going on for any knid of user #### ")
+            }            
+        });
+    }
+
+
+
+
 
 };

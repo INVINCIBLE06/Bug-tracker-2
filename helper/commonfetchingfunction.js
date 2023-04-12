@@ -47,9 +47,30 @@ module.exports = class fetching
         });
     };
 
+    static async GetTheCountOfIncorrectPasswordEventHappend(id)
+    {
+        return await new Promise((resolve, reject) =>
+        {
+            let selQuery = `SELECT * FROM login_incorrect_attempts l WHERE l.user_Id = '${id}' AND l.status = '${constants.status.active}' AND l.blocked_till IS NULL`;
+            con.query(selQuery, (err, result) => 
+            {
+                if(result.length == 0)
+                {
+                    console.log("Not Found")
+                    resolve(result);
+                }
+                else if(result.length != 0)
+                {
+                    console.log("Found")
+                    resolve(result);
+                }
+                else
+                {
+                    console.log("Not Found");
+                    resolve(result);
 
-
-
-
-
+                }
+            });
+        });
+    };
 };

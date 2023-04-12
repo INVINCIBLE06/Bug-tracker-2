@@ -34,18 +34,18 @@ const isvalidEmail = (email) =>
         // console.log(domainParts); // output: ['gmail', 'com', 'com']
         if(domainParts[1] === domainParts[2])
             {
-                console.log('Both the domain names are same. It is not a valid email');
+                // console.log('Both the domain names are same. It is not a valid email');
                 return false
             }
             else
             {
-                console.log('Valid Email');
+                // console.log('Valid Email');
                 return true;
             }
     } 
     else
     {
-        console.log('Invalid Email');
+        // console.log('Invalid Email');
         return false
     }
 };

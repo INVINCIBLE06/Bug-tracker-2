@@ -55,90 +55,93 @@ exports.signin = async (req, res) =>
                 if(resultADC.length != 0) 
                 { // the below query is getting the module id and module name. The checking can be done with user id and roleid
                     let MidName = `SELECT m.id, m.module_name FROM permissions p, modules m WHERE p.user_Id = '${result[0].User_Id}' AND p.role_Id = '${result[0].Role_Id}' AND p.module_Id = m.id`;
-                    con.query(MidName, (err, resultMID) => // executing the above query  
-                    {// the below code is for compare the password enterted by the user from the password available in the database for that particular email and entered
-                        bcrypt.compare(password, result[0].password, (err, result2) => // executing the above query 
-                        { // The above line is comparing the password available in the db with the password entered bu the user
-                          if(result2) // If it is correct then it will inside the if loop
-                            {
-                                if(result[0].status == constants.status.inactive) // After password is correct then we are checking whether that user is a ACTIVE user or INACTIVE user
-                                { // If inactive user then they will not be able to get the dashboard
-                                    return res.send
-                                    ({ // This message will be displayed 
+                    con.query(MidName, async (err, resultMID) => // executing the above query  
+                    {
+                        // the below code is for compare the password enterted by the user from the password available in the database for that particular email and entered
+                        let CheckingWhetherLoginIsAllowedOrNot = await checkblocked(result[0].User_Id);
+                        if(CheckingWhetherLoginIsAllowedOrNot.length != 0)
+                        {
+                            res.send
+                            ({
+                                success : false,
+                                code : 404,
+                                message : "You have exceeded the 5 concecutive incorrect password attempt. You cannot login for 24 hours"
+                            })
+                        }
+                        else
+                        {
+                            bcrypt.compare(password, result[0].password, async (err, result2) => // executing the above query 
+                            { 
+                            // The above line is comparing the password available in the db with the password entered bu the user
+                            if(result2) // If it is correct then it will inside the if loop
+                                {
+                                    if(result[0].status == constants.status.inactive) // After password is correct then we are checking whether that user is a ACTIVE user or INACTIVE user
+                                    { // If inactive user then they will not be able to get the dashboard
+                                        return res.send
+                                        ({ // This message will be displayed 
+                                            success : false,
+                                            code : 400,
+                                            message : "Sorry you cannot login as per now. You have blocked by the Admin",
+                                            role : result[0].role_name, // Role name of the user
+                                            status : result[0].status // status of the name
+                                        });
+                                    }
+                                    else // After password is correct then we are checking whether that user is a ACTIVE user or INACTIVE user
+                                    {   // If active user then they will get the dashboard
+                                        // the below query is for call the stored procedure. That procedure will be used to enter the ip_address, user_id, login type, browser description into users_activities
+                                        let StrCallQuery = `CALL insertintousers_activities('svdv4854', '${result[0].User_Id}', '${constants.loggedStatus.login}', 'This is just of checking purpose for logout')`;
+                                        con.query(StrCallQuery, (err, resultlg) => // executing the above query
+                                        { // if the procedured executed successfully then this if block code is executed
+                                            if(resultlg.length != 0)
+                                            {
+                                                console.log(`Data entered of the user whose id is '${result[0].User_Id}' into the users_activities table at the time of login`);
+                                                let StrCallQuery2 = `CALL insertintoreportswhilelogin('${result[0].User_Id}') `; // this query will call the store procedure that will enter the login time in the user report table keeping the user activity data
+                                                con.query(StrCallQuery2, (err, resultlgg) => // executing the above query
+                                                { // if the procedured executed successfully then this if block code is executed
+                                                    if(resultlgg.length != 0)
+                                                    {
+                                                        const token = jwt.sign({id : result[0].User_Id, purpose: "authentication"}, authConfig.secret, {expiresIn : process.env.JWT_TIME}); // expiery time is 24 hours
+                                                        // console.log(token)
+                                                        console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
+                                                        console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
+                                                        return res.status(200).send
+                                                        ({ // This message will be displayed 
+                                                            success : true,
+                                                            code : 200,
+                                                            message : "Signin Successfully",
+                                                            date : {
+                                                                        users : result,
+                                                                        access : token, 
+                                                                        module : resultMID
+                                                                    }
+                                                        });
+                                                    }
+                                                    else // if the procedured executed unsuccessfully then this else block code is executed
+                                                    {
+                                                        console.log(`Error happen while entering the user id '${result[0].User_Id}' data at the time login in the report table for calculating total logged hours `, err.message);
+                                                    }
+                                                });
+                                            }
+                                            else // if the procedured executed unsuccessfully then this if block code is executed
+                                            {
+                                                console.log(`Error happen while entering the user id '${result[0].User_Id}' data into users_activities table at the time of login`, err.message);
+                                            }
+                                        });
+                                    }
+                                } 
+                                else 
+                                {  
+                                    // console.log("Passsword is not correct", err);                                
+                                    commonoperation.insertincorrectpasswordcount(result[0].User_Id)
+                                    return res.status(400).send
+                                    ({
                                         success : false,
                                         code : 400,
-                                        message : "Sorry you cannot login as per now. You have blocked by the Admin",
-                                        role : result[0].role_name, // Role name of the user
-                                        status : result[0].status // status of the name
+                                        message : "Signin faied ! Password is incorrect",
                                     });
                                 }
-                                else // After password is correct then we are checking whether that user is a ACTIVE user or INACTIVE user
-                                {   // If active user then they will get the dashboard
-                                    // the below query is for call the stored procedure. That procedure will be used to enter the ip_address, user_id, login type, browser description into users_activities
-                                    let StrCallQuery = `CALL insertintousers_activities('svdv4854', '${result[0].User_Id}', '${constants.loggedStatus.login}', 'This is just of checking purpose for logout')`;
-                                    con.query(StrCallQuery, (err, resultlg) => // executing the above query
-                                    { // if the procedured executed successfully then this if block code is executed
-                                        if(resultlg.length != 0)
-                                        {
-                                            console.log(`Data entered of the user whose id is '${result[0].User_Id}' into the users_activities table at the time of login`);
-                                            let StrCallQuery2 = `CALL insertintoreportswhilelogin('${result[0].User_Id}') `; // this query will call the store procedure that will enter the login time in the user report table keeping the user activity data
-                                            con.query(StrCallQuery2, (err, resultlgg) => // executing the above query
-                                            { // if the procedured executed successfully then this if block code is executed
-                                                if(resultlgg.length != 0)
-                                                {
-                                                    const token = jwt.sign({id : result[0].User_Id, purpose: "authentication"}, authConfig.secret, {expiresIn : process.env.JWT_TIME}); // expiery time is 24 hours
-                                                    // console.log(token)
-                                                    console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
-                                                    console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
-                                                    return res.status(200).send
-                                                    ({ // This message will be displayed 
-                                                        success : true,
-                                                        code : 200,
-                                                        message : "Signin Successfully",
-                                                        date : 
-                                                                {
-                                                                    users : result,
-                                                                    access : token, 
-                                                                    // module : resultMID
-                                                                }
-                                                    });
-                                                }
-                                                else // if the procedured executed unsuccessfully then this else block code is executed
-                                                {
-                                                    console.log(`Error happen while entering the user id '${result[0].User_Id}' data at the time login in the report table for calculating total logged hours `, err.message);
-                                                }
-                                            });
-                                        }
-                                        else // if the procedured executed unsuccessfully then this if block code is executed
-                                        {
-                                            console.log(`Error happen while entering the user id '${result[0].User_Id}' data into users_activities table at the time of login`, err.message);
-                                        }
-                                    });
-                                }
-                            } 
-                            else 
-                            {  
-                                console.log("Passsword is not correct", err);
-                                let checkblocked = commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].User_Id)
-                                if(checkblocked)
-                                {
-                                    console.log("You cannot login now because you have exceeded you maximum incorrect password input limit")
-                                }
-                                else
-                                {
-                                    console.log("Here"); 
-                                    commonoperation.insertincorrectpasswordcount(result[0].User_Id);
-                                }
-                                
-                                // If password is incorrect then this code will get
-                                // return res.status(400).send
-                                // ({
-                                //     success : false,
-                                //     code : 400,
-                                //     message : "Signin faied ! Password is incorrect",
-                                // });
-                            }
-                        });
+                            });
+                        }
                     });
                 }
             });
@@ -155,6 +158,19 @@ exports.signin = async (req, res) =>
         }
     });
 };
+
+const checkblocked = async (id) =>
+{
+    let whetherblocked = await commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(id)
+    return whetherblocked;
+}
+
+
+
+
+
+
+
 
 /**
  * The below query is is logout of the user
@@ -218,6 +234,21 @@ exports.SignOut = (req, res) =>
         }
     });
 };
+
+// let checkblocked = await commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].User_Id)
+// if(checkblocked.length == 0)
+// {
+//     console.log("You cannot login now because you have exceeded you maximum incorrect password input limit")
+// }
+// else
+// {
+//     console.log("Here"); 
+//     commonoperation.insertincorrectpasswordcount(result[0].User_Id);
+// }
+
+
+
+
 
 
 /**

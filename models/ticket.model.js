@@ -46,7 +46,7 @@ module.exports = class ticket
                                             else
                                             {
                                                 let insQuery = `INSERT INTO tickets(title, description, reporter, assignee, image_name, created_at, updated_at, expired_at, reporter_Id, assignee_Id) VALUES (?,?,?,?,?,?,?,?, '${result1[0].id}', '${result2[0].idu}')`;
-                                                con.query(insQuery, [title, description, reporter, assignee, filename, (nowd()), updated_at, (DAYADD())], (err, result3)=>
+                                                con.query(insQuery, [title, description, reporter, assignee, filename, (nowd()), updated_at, (DAYADD(2))], (err, result3)=>
                                                 // exceuting the above query. All the values are entered by the user in the response
                                                 { 
                                                     if(result3.length != 0) // If ticket successfully created
@@ -703,10 +703,10 @@ module.exports = class ticket
 };
 
 // The below arrow function is used for adding data in expired date column. The expired date column have the 2 days plus date of ticekt created date
-const DAYADD = () =>
+const DAYADD = (plus) =>
     {
         const now = new Date(); // here we fetching the current date and assigning it to the now variable
-        const value = date.addDays(now, 2); // adding 2 days in the now variable. which has the current date
+        const value = date.addDays(now, plus); // adding 2 days in the now variable. which has the current date
         return value; // Return the new 2 days add value
     };
 
@@ -741,3 +741,13 @@ function convertDatePickerTimeToMySQLTime(str) {
     var mySQLTime = [hours, minutes, seconds].join(":");
     return [mySQLDate, mySQLTime].join(" ");
 }
+
+
+const timeexportfunction = 
+{
+    DAYADD,
+    nowd,
+    convertDatePickerTimeToMySQLTime
+}
+
+module.exports = timeexportfunction;

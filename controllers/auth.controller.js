@@ -3,6 +3,9 @@ const authConfig = require('../configs/auth.config');
 const con = require('../configs/db.config'); // importing the database details
 const constants = require('../utils/constants'); // importing the constants file details
 
+const commonfunc = require('../helper/commonfetchingfunction');
+const commonoperation = require('../helper/commonoperationfunctions');
+
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
@@ -19,11 +22,11 @@ exports.AddNewUser = async(req, res, next)=>
     {
         // res.send('New user Added Successfully');
         return res.status(200).send
-            ({
-                success : true,
-                code : 200,
-                message : "Signup Successfully",
-            })
+        ({
+            success : true,
+            code : 200,
+            message : "Signup Successfully",
+        })
     }
     else
     {   // if user added then below if code will be executed other wisee else part
@@ -39,7 +42,7 @@ exports.AddNewUser = async(req, res, next)=>
 /**
  * Below function is used for user signin after checking the emailid and password
  */
-exports.signin = (req, res) => 
+exports.signin = async (req, res) => 
 { // The below query will give check user based on the email id submitted
     const { email, password } = req.body
     con.query(`SELECT u.id AS User_Id, u.password, u.name, u.email, u.mobile, u.status, r.id AS Role_Id, r.role_name FROM users u, roles r WHERE u.email = '${email}' AND u.role_Id = r.id`, (err, result) =>
@@ -64,7 +67,7 @@ exports.signin = (req, res) =>
                                     ({ // This message will be displayed 
                                         success : false,
                                         code : 400,
-                                        message : "Soory You cannot login as per now. You have blocked by the Admin",
+                                        message : "Sorry you cannot login as per now. You have blocked by the Admin",
                                         role : result[0].role_name, // Role name of the user
                                         status : result[0].status // status of the name
                                     });
@@ -104,30 +107,41 @@ exports.signin = (req, res) =>
                                                 {
                                                     console.log(`Error happen while entering the user id '${result[0].User_Id}' data at the time login in the report table for calculating total logged hours `, err.message);
                                                 }
-                                            });                                            
+                                            });
                                         }
                                         else // if the procedured executed unsuccessfully then this if block code is executed
                                         {
                                             console.log(`Error happen while entering the user id '${result[0].User_Id}' data into users_activities table at the time of login`, err.message);
                                         }
                                     });
-                                }                                                        
+                                }
                             } 
                             else 
-                            {   
+                            {  
                                 console.log("Passsword is not correct", err);
+                                let checkblocked = commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].User_Id)
+                                if(checkblocked)
+                                {
+                                    console.log("You cannot login now because you have exceeded you maximum incorrect password input limit")
+                                }
+                                else
+                                {
+                                    console.log("Here"); 
+                                    commonoperation.insertincorrectpasswordcount(result[0].User_Id);
+                                }
+                                
                                 // If password is incorrect then this code will get
-                                return res.status(400).send
-                                ({
-                                    success : false,
-                                    code : 400,
-                                    message : "Signin faied ! Password is incorrect",
-                                });
+                                // return res.status(400).send
+                                // ({
+                                //     success : false,
+                                //     code : 400,
+                                //     message : "Signin faied ! Password is incorrect",
+                                // });
                             }
                         });
                     });
                 }
-            });            
+            });
         }
         else
         {   // If the email is not correct. Then this lines of code will get execute
@@ -138,9 +152,9 @@ exports.signin = (req, res) =>
                 code : 400,
                 message : "Unauthorised user ! Email id is not registered with us",
             });
-        }   
+        }
     });
-}; 
+};
 
 /**
  * The below query is is logout of the user
@@ -202,7 +216,7 @@ exports.SignOut = (req, res) =>
         {
             console.log("Error occurr while entering the data into the users_activities table at the time of logout", err.message)            
         }
-    });    
+    });
 };
 
 
@@ -256,12 +270,30 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) => {
         if(result)
         {
             console.log('Email sent successfully'); // You can return a response or perform any other action here
-            res.send
-            ({
-                success : true,
-                code : 200,
-                message : 'OTP sent successfully',
-                OTP : OTP         
+            let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${req.body.email}', '${bcrypt.hashSync(OTP)}', '2023-04-12 12:22:53')`;
+            con.query(InsQuery, (err, result) =>
+            {
+                if(result.length != 0)
+                {
+                    console.log('OTP stored successfully'); // You can return a response or perform any other action here
+                    res.send
+                    ({
+                        success : true,
+                        code : 200,
+                        message : 'OTP sent successfully',
+                        OTP : OTP         
+                    });
+                }
+                else
+                {
+                    console.log('OTP not stored', err.message); // You can return a response or perform any other action here
+                    res.send
+                    ({
+                        success : true,
+                        code : 500,
+                        message : 'Internal server error',         
+                    });
+                }
             });
         }
         else
@@ -281,7 +313,16 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) => {
     }
 };
 
-exports.CheckOTP = (req , res) =>
+exports.CheckOTP = async (req , res) =>
 {
-    console.log(OTP)
+    let result = await commonfunc.getUserDetailsByEmailCondition(req.body.email);
+    if(result)
+    {
+        console.log("Found")
+        commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].id)
+    }
+    else
+    {
+        console.log("Not Found");
+    }
 }

@@ -31,7 +31,7 @@ module.exports = async function()
                         if(string == constants.allow.yes) // If answer is YES
                         {
                             // the below query will downloading all the tables. Note we can dowload all the tables at once in MYSQL                              
-                            var delete_query = `DROP TABLE reports, tickets_activities, users_activities, messages, permissions, modules, tickets, users, roles`;
+                            var delete_query = `DROP TABLE passwordcounts, otpstores, reports, tickets_activities, users_activities, messages, permissions, modules, tickets, users, roles`;
                             con.query(delete_query, function (error, result) // executing the above query
                             {    
                                 // If the deleting all the table is successfully happend, Then this if block code will be executed

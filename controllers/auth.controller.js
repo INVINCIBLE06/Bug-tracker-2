@@ -2,12 +2,11 @@ const user = require('../models/user.model'); // Importing the user model detail
 const authConfig = require('../configs/auth.config');
 const con = require('../configs/db.config'); // importing the database details
 const constants = require('../utils/constants'); // importing the constants file details
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
+const CodeOrLinkVerification = require('../utils/VerifyEmailRequest');
 
 
 /**
@@ -248,63 +247,41 @@ exports.activitylogs = (req, res) =>
  * OTP or verification link.  
  */
 
-exports.emailVerfication = (req, res, next) =>
-{
-    const generateOTP = () => 
+exports.sendOTPcodeToEmailForVerification = async (req, res, next) => {
+    var OTP = CodeOrLinkVerification.GenerateSixDigitOTPcode();
+    console.log(`The OTP is ${OTP}`);
+    try 
     {
-        return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP
-    };
-    
-    const otp = generateOTP(); // call this function to generate OTP
-    
-    console.log(otp);
-
-    const transporter = nodemailer.createTransport
-    ({
-        service : 'Gmail', // replace with your email service provider
-        auth : 
+        let result = await CodeOrLinkVerification.SendGeneratedOTPCode(req.body.email, OTP);
+        if(result)
         {
-            user : process.env.adminemail, // replace with your email address
-            pass : process.env.password // replace with your email password
+            console.log('Email sent successfully'); // You can return a response or perform any other action here
+            res.send
+            ({
+                success : true,
+                code : 200,
+                message : 'OTP sent successfully',
+                OTP : OTP         
+            });
         }
-    });
-
-    const sendVerificationEmail = (to, otp) => 
+        else
+        {
+            console.log('Email not sent'); // You can return a response or perform any other action here
+            res.send
+            ({
+                success : true,
+                code : 400,
+                message : 'Error While Sending the email',         
+            });
+        }        
+    } 
+    catch(error)
     {
-        const mailOptions = 
-        {
-            from : process.env.adminemail, // replace with your email address
-            to : to, // recipient's email address
-            subject: 'Email Verification',
-            text: `Your OTP for email verification is: ${otp}`
-        };
-      
-        transporter.sendMail(mailOptions, (error, info) => 
-        {
-            if (error) 
-            {
-                console.error('Error sending email:', error);
-            } 
-            else
-            {
-                console.log('Email sent:', info.response);
-            }
-        });
-    };      
-    sendVerificationEmail('saurabhpande4@gmail.com', otp); // call this function to send the email
+        console.error('Error sending email:', error); // You can handle the error and return an appropriate response or perform any other action here
+    }
+};
 
-    // Assuming the user's provided OTP is stored in a variable called 'userOTP'
-    // if (userOTP === otp) 
-    // {
-    //     console.log('OTP matched. Email verified successfully!');
-    // }
-    // else
-    // {
-    //     console.log('OTP did not match. Email verification failed.');
-    // }
-  
-
+exports.CheckOTP = (req , res) =>
+{
+    console.log(OTP)
 }
-
-
-   

@@ -71,6 +71,13 @@ module.exports =
 
     tickets_expiration_deadline_day : 2,
 
+
+    password_protection_policy_numbers :
+    {
+        number_of_incorrect_password_attempt : 5,
+        user_blocked_for_days : 1 
+    },
+
     event_scheduler_status :
     {
         on : "ON",

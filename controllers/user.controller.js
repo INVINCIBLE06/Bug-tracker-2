@@ -214,16 +214,15 @@ exports.UpdateUserStatus = async (req, res) =>
             message : "User status changed to INACTIVE",
             data : users
         });
-
     }
     else
     {
         return res.status(400).send
-            ({
-                success : false,
-                code : 400,
-                message : "Error while updating user status",
-            });
+        ({
+            success : false,
+            code : 400,
+            message : "Error while updating user status",
+        });
     }
-
 };
+

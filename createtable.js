@@ -1,8 +1,7 @@
-
-    const con = require('./configs/db.config');  // importing the database details
-    const init = require('./init'); // importing the init file data and assigninfg it to another variable
-    const constants = require('./utils/constants'); // Importing the constants file. This file contain the constant details
-    const readline = require("readline");
+const con = require('./configs/db.config');  // importing the database details
+const init = require('./init'); // importing the init file data and assigninfg it to another variable
+const constants = require('./utils/constants'); // Importing the constants file. This file contain the constant details
+const readline = require("readline");
 
 module.exports = async function() 
 { 
@@ -12,8 +11,8 @@ module.exports = async function()
         { // the below query is for the creating the role table
            let ctrQury = `CREATE TABLE roles(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                           role_name VARCHAR(50),
-                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`;
+                          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                          updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP )`;
             con.query(ctrQury,(err, result1) => // executing the above query
             {
                 if(result1) // the role table is successfully created, then the if block code will be executed
@@ -34,8 +33,8 @@ module.exports = async function()
                                             confirm_password varchar(255),
                                             role_Id INT,
                                             FOREIGN KEY (role_Id) REFERENCES roles(id),                                 
-                                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-                                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                            updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                                             INDEX index1(id)
                                             )`;         
                         con.query(ctrQury2, (err, resultm2) => // executing the above query
@@ -52,9 +51,9 @@ module.exports = async function()
                                     priority ENUM ('${constants.priority.normal}', '${constants.priority.urgent}') DEFAULT '${constants.priority.normal}',
                                     status ENUM ('${constants.status.open}', '${constants.status.pending}', '${constants.status.closed}', '${constants.status.working}', '${constants.status.resolved}') DEFAULT '${constants.status.open}',
                                     image_name VARCHAR(255),
-                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP ,
+                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                     expired_at DATETIME,
-                                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                                     reporter_Id INT,
                                     FOREIGN KEY(reporter_Id) REFERENCES users(id),
                                     assignee_Id INT,
@@ -71,8 +70,8 @@ module.exports = async function()
                                                         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                                         module_name VARCHAR(255) NOT NULL,
                                                         active ENUM ('${constants.allow.yes}', '${constants.allow.no}') DEFAULT '${constants.allow.yes}',
-                                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-                                                        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                        updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
                                                         )`;
                                         con.query(ctrQury4, (err, resultm4) => // executing the above query
                                         { // If the modules table is successfully created then this if block code
@@ -112,7 +111,7 @@ module.exports = async function()
                                                                                 FOREIGN KEY (ticket_Id) REFERENCES tickets(id),
                                                                                 message VARCHAR(255) NOT NULL,
                                                                                 sender_role VARCHAR(255) NOT NULL,
-                                                                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+                                                                                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                                                                                 INDEX index3(ticket_id)
                                                                                 )`;
                                                                 con.query(ctrQury6, (err, resultm7) => // executing the above query
@@ -121,14 +120,15 @@ module.exports = async function()
                                                                     {
                                                                         console.log(' #### Message table successfully created #### ');
                                                                         // the below query is for the creating the users_activities table
-                                                                        let ctryQuery7 =    `CREATE TABLE users_activities(
+                                                                        let ctryQuery7 =   `CREATE TABLE users_activities(
                                                                                             id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                                                                                             ip_address VARCHAR(255) NOT NULL,
                                                                                             user_id INT,
                                                                                             FOREIGN KEY(user_id) REFERENCES users(id),
-                                                                                            activity ENUM('Login', 'Logout') DEFAULT 'Login',
+                                                                                            activity ENUM('${constants.loggedStatus.login}', '${constants.loggedStatus.logout}') DEFAULT '${constants.loggedStatus.login}',
                                                                                             description VARCHAR(255),
-                                                                                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
+                                                                                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                                                                                            )`;
                                                                         con.query(ctryQuery7, (err, resultm8) => // executing the above query
                                                                         {
                                                                             if(resultm8.length != 0) // If the users_activities table is successfully created then this if block code
@@ -148,7 +148,8 @@ module.exports = async function()
                                                                                                   status ENUM ('${constants.status.open}','${constants.status.resolved}','${constants.status.closed}','${constants.status.working}','${constants.status.pending}'),
                                                                                                   priority ENUM('${constants.priority.urgent}', '${constants.priority.normal}', '${constants.priority.open}'),
                                                                                                   description VARCHAR(255),
-                                                                                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`;
+                                                                                                  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                                                                                                  )`;
                                                                                 con.query(ctryQuery8, (err, resultm9) => // executing the above query
                                                                                 {
                                                                                     if(resultm9.length != 0) // If the tickets_activities table is successfully created then this if block code
@@ -260,25 +261,65 @@ module.exports = async function()
                                                                                                                                                             if(resultm17.length != 0) // If the scheduler is successfully enabled then this if block of code 
                                                                                                                                                             {
                                                                                                                                                                 console.log(' #### Event scheduler status have been set to ON. It is required. Otherwise our event will not work #### ');
-                                                                                                                                                                console.log(' #### All Stored procedured are created #### ');
-                                                                                                                                                                console.log(' #### All Events are created #### ');
-                                                                                                                                                                console.log(' #### All tables are created #### '); 
-                                                                                                                                                                console.log('-------------------------------------------------------------------------------------');
-                                                                                                                                                                
-                                                                                                                                                                var rl3 = readline.createInterface(process.stdin, process.stdout);
-                                                                                                                                                                rl3.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO) #### \n ", function (string3) 
+                                                                                                                                                                let ctryQuery9 = `  CREATE TABLE otpstores(
+                                                                                                                                                                                    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                                                                                                                                                                                    email varchar(255) UNIQUE NOT NULL,
+                                                                                                                                                                                    otp VARCHAR(10) NOT NULL,
+                                                                                                                                                                                    status ENUM('${constants.status.active}', '${constants.status.inactive}') DEFAULT '${constants.status.active}',
+                                                                                                                                                                                    expired_at TIME DEFAULT NULL,
+                                                                                                                                                                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                                                                                                                                                    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP )`;
+                                                                                                                                                                con.query(ctryQuery9, (err, resultm18) =>
                                                                                                                                                                 {
-                                                                                                                                                                    if(string3 == constants.allow.yes)
+                                                                                                                                                                    if(resultm18.length != 0)
                                                                                                                                                                     {
-                                                                                                                                                                        init(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
-                                                                                                                                                                        rl3.close();
-                                                                                                                                                                        return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines                                                                                                                                                                       
+                                                                                                                                                                        console.log(" #### otpstores table created successfully ####");
+                                                                                                                                                                        let ctryQuery10 = `CREATE TABLE passwordcounts(
+                                                                                                                                                                            id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+                                                                                                                                                                            user_Id INT,
+                                                                                                                                                                            FOREIGN KEY (user_id) REFERENCES users(id),
+                                                                                                                                                                            count INT,
+                                                                                                                                                                            status ENUM('${constants.status.active}', '${constants.status.inactive}') DEFAULT '${constants.status.active}',
+                                                                                                                                                                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                                                                                                                                            updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP 
+                                                                                                                                                                            )`;
+                                                                                                                                                                        con.query(ctryQuery10, (err, resultm19) =>
+                                                                                                                                                                        {
+                                                                                                                                                                            if(resultm19.length != 0)
+                                                                                                                                                                            {
+                                                                                                                                                                                console.log(" #### passwordcounts table created successfully ####");
+                                                                                                                                                                                console.log(' #### All Stored procedured are created #### ');
+                                                                                                                                                                                console.log(' #### All Events are created #### ');
+                                                                                                                                                                                console.log(' #### All tables are created #### ');
+
+                                                                                                                                                                                console.log('-------------------------------------------------------------------------------------');
+                                                                                                                                                                                
+                                                                                                                                                                                var rl3 = readline.createInterface(process.stdin, process.stdout);
+                                                                                                                                                                                rl3.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO) #### \n ", function (string3) 
+                                                                                                                                                                                {
+                                                                                                                                                                                    if(string3 == constants.allow.yes)
+                                                                                                                                                                                    {
+                                                                                                                                                                                        init(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
+                                                                                                                                                                                        rl3.close();
+                                                                                                                                                                                        return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines                                                                                                                                                                       
+                                                                                                                                                                                    }
+                                                                                                                                                                                    else
+                                                                                                                                                                                    {
+                                                                                                                                                                                        console.log(' #### Data is not inserted into the database. As per your request #### ');
+                                                                                                                                                                                        rl3.close();
+                                                                                                                                                                                        return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
+                                                                                                                                                                                    }
+                                                                                                                                                                                });
+                                                                                                                                                                            }
+                                                                                                                                                                            else
+                                                                                                                                                                            {
+                                                                                                                                                                                return console.log(' #### Error happen while creating the passwordcounts table #### ', err.message);
+                                                                                                                                                                            }
+                                                                                                                                                                        });
                                                                                                                                                                     }
                                                                                                                                                                     else
                                                                                                                                                                     {
-                                                                                                                                                                        console.log(' #### Data is not inserted into the database. As per your request #### ');
-                                                                                                                                                                        rl3.close();
-                                                                                                                                                                        return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
+                                                                                                                                                                        return console.log(' #### Error happen while creating the otpstores table #### ', err.message);
                                                                                                                                                                     }
                                                                                                                                                                 });
                                                                                                                                                             }

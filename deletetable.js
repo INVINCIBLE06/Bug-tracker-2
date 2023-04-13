@@ -28,7 +28,7 @@ module.exports = async function()
                     rl.question(" #### There is already table present in the database. Do you want to delete them (YES/NO) #### \n ", function (string) 
                     {   
                         // string --> Contains the value entered by the user. It must be YES/NO. 
-                        if(string == constants.allow.yes) // If answer is YES
+                        if((string.toUpperCase()) == constants.allow.yes) // If answer is YES
                         {
                             // the below query will downloading all the tables. Note we can dowload all the tables at once in MYSQL                              
                             var delete_query = `DROP TABLE login_incorrect_attempts, otpstores, reports, tickets_activities, users_activities, messages, permissions, modules, tickets, users, roles`;
@@ -86,27 +86,55 @@ module.exports = async function()
                                                                                         if(result7) // If PROCEDURE myactivitylogs deleted successfully
                                                                                         {
                                                                                             console.log(' #### myactivitylogs Stored procedure is successfully deleted #### ');
-                                                                                            console.log(' #### All stored procedures have been successfully deleted #### ');
-                                                                                            console.log(' #### All tables have been successfully deleted #### ');
-                                                                                            console.log(' #### All events have been successfully deleted #### ');
-                                                                                            rl.close();
-                                                                                            console.log('-------------------------------------------------------------------------------------');
-                                                                                            var rl2 = readline.createInterface(process.stdin, process.stdout);
-                                                                                            rl2.question(" #### Tables and their data both are deleted. Do you want create the table now (YES/NO) #### \n ", function (string2) 
+                                                                                            var delete_event2 = `DROP EVENT unblockuserfromlogin `;
+                                                                                            con.query(delete_event2, function (err, result8)
                                                                                             {
-                                                                                                if(string2 == constants.allow.yes)
+                                                                                                if(result8)
                                                                                                 {
-                                                                                                    // rl2.close();
-                                                                                                    createtable(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
-                                                                                                    return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
+                                                                                                    console.log(' #### unblockuserfromlogin event is successfully deleted ####');
+                                                                                                    var delete_event3 = `DROP EVENT OTPisexpired `;
+                                                                                                    con.query(delete_event3, function (err, result9)
+                                                                                                    {
+                                                                                                        if(result9)
+                                                                                                        {
+                                                                                                            console.log(' #### OTPisexpired event is successfully deleted ####');
+                                                                                                            console.log(' #### All stored procedures have been successfully deleted #### ');
+                                                                                                            console.log(' #### All tables have been successfully deleted #### ');
+                                                                                                            console.log(' #### All events have been successfully deleted #### ');
+                                                                                                            rl.close();
+                                                                                                            console.log('-------------------------------------------------------------------------------------');
+                                                                                                            var rl2 = readline.createInterface(process.stdin, process.stdout);
+                                                                                                            rl2.question(" #### Tables and their data both are deleted. Do you want create the table now (YES/NO) #### \n ", function (string2) 
+                                                                                                            {
+                                                                                                                if((string2.toLocaleUpperCase()) == constants.allow.yes)
+                                                                                                                {
+                                                                                                                    // rl2.close();
+                                                                                                                    createtable(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
+                                                                                                                    return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    console.log(' #### Table are not created. As per your request #### ');
+                                                                                                                    rl2.close();
+                                                                                                                    return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
+                                                                                                                }
+                                                                                                            });
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            console.log(" #### Error while deleting checkticketexiparation event. #### " /**, err */);  
+                                                                                                            rl.close(); // This will close the interface created by readline.createInterface
+                                                                                                            return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
+                                                                                                        }
+                                                                                                    });
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                    console.log(' #### Table are not created. As per your request #### ');
-                                                                                                    rl2.close();
-                                                                                                    return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
+                                                                                                    console.log(" #### Error while deleting checkticketexiparation event. #### " /**, err */);  
+                                                                                                    rl.close(); // This will close the interface created by readline.createInterface
+                                                                                                    return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
                                                                                                 }
-                                                                                            });
+                                                                                            });                                                                                                                                                                                        
                                                                                         }
                                                                                         else // if any error, while deleting the myactivitylogs STORED PROCEDURE, Then this else block will execute
                                                                                         {
@@ -191,7 +219,7 @@ module.exports = async function()
                     var rl = readline.createInterface(process.stdin, process.stdout);
                     rl.question(" #### Do you want to create the table (YES/NO) #### \n ", function (string) 
                     {
-                        if(string == constants.allow.yes)
+                        if((string.toLocaleUpperCase()) == constants.allow.yes)
                         {
                             createtable();
                         }
@@ -210,4 +238,5 @@ module.exports = async function()
     }
 };
 
-        
+
+                                                                                            

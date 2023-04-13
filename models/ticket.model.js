@@ -704,12 +704,17 @@ module.exports = class ticket
 
 // The below arrow function is used for adding data in expired date column. The expired date column have the 2 days plus date of ticekt created date
 const DAYADD = (plus) =>
-    {
-        const now = new Date(); // here we fetching the current date and assigning it to the now variable
-        const value = date.addDays(now, plus); // adding 2 days in the now variable. which has the current date
-        return value; // Return the new 2 days add value
-    };
+{
+    const now = new Date(); // here we fetching the current date and assigning it to the now variable
+    const value = date.addDays(now, plus); // adding 2 days in the now variable. which has the current date
+    return value; // Return the new 2 days add value
+};
 
+const minutesAdd = (plus) =>
+{
+    const now = new Date();
+    return new Date(now.getTime() + plus * 60000);
+}
 
 const nowd = () =>
 {
@@ -728,7 +733,8 @@ const nowd = () =>
 };
 
 
-function convertDatePickerTimeToMySQLTime(str) {
+const convertDatePickerTimeToMySQLTime = (str) =>
+{
     var month, day, year, hours, minutes, seconds;
     var date = new Date(str),
     month = ("0" + (date.getMonth() + 1)).slice(-2),
@@ -747,7 +753,8 @@ const timeexportfunction =
 {
     DAYADD,
     nowd,
-    convertDatePickerTimeToMySQLTime
+    convertDatePickerTimeToMySQLTime,
+    minutesAdd
 }
 
 module.exports = timeexportfunction;

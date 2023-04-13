@@ -28,6 +28,8 @@ module.exports = function(app)
     // through this below route we will be having the information for all the user. Only the Id which is submiited in the pamras. That users information will not be fetched
     app.get('/get/all/user/not/logged/one/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.GetAllUserWithOutTheLoggedOne);
     
-    app.get('/get/reset/password/link/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.PasswordResetLink )
+    app.get('/get/reset/password/link/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.PasswordResetLink);
+
+    app.post('/user/send/otp', emailvalidation, usercontroller.sendOTPcodeToEmailForVerification);
 
 };

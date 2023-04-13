@@ -1,6 +1,6 @@
 const con = require("../configs/db.config");  // importing the database details
 const constants = require('../utils/constants'); // Importing the constants file. This file contain the constant details
-const time = require('../models/ticket.model')
+const time = require('../models/ticket.model');
 
 module.exports = class fetching
 {
@@ -29,7 +29,7 @@ module.exports = class fetching
     {
         return await new Promise((resolve, reject) =>
         {
-            let selQuery = `SELECT * FROM login_incorrect_attempts l WHERE l.user_Id = '${id}' AND l.incorrect_count = '${constants.password_protection_policy_numbers.number_of_incorrect_password_attempt}' AND l.blocked_till >= '${time.nowd()}' AND l.status = '${constants.status.active}' `;
+            let selQuery = `SELECT * FROM login_incorrect_attempts l WHERE l.user_Id = '${id}' AND l.incorrect_count = '${constants.day_or_minutes_protection_policy_numbers.number_of_incorrect_password_attempt}' AND l.blocked_till >= '${time.nowd()}' AND l.status = '${constants.status.active}' `;
             con.query(selQuery, (err, result) =>
             {
                 // console.log(result)

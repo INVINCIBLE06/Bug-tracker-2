@@ -2,6 +2,7 @@ const con = require('./configs/db.config');  // importing the database details
 const init = require('./init'); // importing the init file data and assigninfg it to another variable
 const constants = require('./utils/constants'); // Importing the constants file. This file contain the constant details
 const readline = require("readline");
+const time = require('./models/ticket.model');
 
 module.exports = async function() 
 { 
@@ -187,7 +188,7 @@ module.exports = async function()
                                                                                                                          AND t.priority = '${constants.priority.normal}' 
                                                                                                                          AND t.status = '${constants.status.open}'
                                                                                                                          OR t.status = '${constants.status.pending}'
-                                                                                                                         OR t.status = '${constants.status.working}'; 
+                                                                                                                         OR t.status = '${constants.status.working} '; 
                                                                                                                          END`
                                                                                                         con.query(eventCre1, (err, resultm12) => // executing the above query
                                                                                                         {
@@ -289,6 +290,21 @@ module.exports = async function()
                                                                                                                                                                             if(resultm19.length != 0)
                                                                                                                                                                             {
                                                                                                                                                                                 console.log(" #### login_incorrect_attempts table created successfully ####");
+                                                                                                                                                                                let eventCre2 = `   CREATE EVENT unblockuserfromlogin
+                                                                                                                                                                                                    ON SCHEDULE EVERY 1 MINUTE
+                                                                                                                                                                                                    ON COMPLETION PRESERVE
+                                                                                                                                                                                                    DO
+                                                                                                                                                                                                    BEGIN
+                                                                                                                                                                                                    UPDATE login_incorrect_attempts l
+                                                                                                                                                                                                    SET l.status = '${constants.status.inactive}', l.updated_at = '${time.nowd()}'
+                                                                                                                                                                                                    WHERE TIMEDIFF('${time.nowd()}', l.blocked_till) > TIME('00:00:00')
+                                                                                                                                                                                                    AND l.status = '${constants.status.active}'
+                                                                                                                                                                                                    AND l.updated_at IS NULL
+                                                                                                                                                                                                    AND l.incorrect_count = '${constants.day_or_minutes_protection_policy_numbers.number_of_incorrect_password_attempt}' ;
+                                                                                                                                                                                                    END `; 
+                                                                                                                                                                                
+                                                                                                                                                                                
+                                                                                                                                                                                
                                                                                                                                                                                 console.log(' #### All Stored procedured are created #### ');
                                                                                                                                                                                 console.log(' #### All Events are created #### ');
                                                                                                                                                                                 console.log(' #### All tables are created #### ');

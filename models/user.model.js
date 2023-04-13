@@ -387,7 +387,7 @@ module.exports = class user
                 if(result)
                 {
                     console.log('Email sent successfully'); // You can return a response or perform any other action here
-                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3))}')`;
+                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}')`;
                     con.query(InsQuery, (err, result) =>
                     {
                         if(result.length != 0)

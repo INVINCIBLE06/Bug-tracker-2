@@ -9,7 +9,6 @@ const commonoperation = require('../helper/commonoperationfunctions');
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
-const CodeOrLinkVerification = require('../utils/sendingEmail');
 
 
 /**

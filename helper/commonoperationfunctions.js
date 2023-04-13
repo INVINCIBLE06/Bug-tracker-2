@@ -28,7 +28,7 @@ module.exports = class operations
                         }
                     })
                 }
-                else if(result[0].incorrect_count >= 1 && result[0].incorrect_count <= ((constants.password_protection_policy_numbers.number_of_incorrect_password_attempt - 1) - 1) && result[0].status === constants.status.active)
+                else if(result[0].incorrect_count >= 1 && result[0].incorrect_count <= ((constants.day_or_minutes_protection_policy_numbers.number_of_incorrect_password_attempt - 1) - 1) && result[0].status === constants.status.active)
                 {
                     let upQuery = `UPDATE login_incorrect_attempts l SET l.incorrect_count = '${(result[0].incorrect_count) + 1}', l.last_attempt = '${time.nowd()}' WHERE l.user_Id = '${id}' AND l.status = '${constants.status.active}' `;
                     con.query(upQuery, (err, result1) =>
@@ -43,9 +43,9 @@ module.exports = class operations
                         }
                     });
                 }
-                else if(result[0].incorrect_count == (constants.password_protection_policy_numbers.number_of_incorrect_password_attempt - 1) && result[0].status === constants.status.active )
+                else if(result[0].incorrect_count == (constants.day_or_minutes_protection_policy_numbers.number_of_incorrect_password_attempt - 1) && result[0].status === constants.status.active )
                 {
-                    let upQuery = `UPDATE login_incorrect_attempts l SET l.last_attempt = '${time.nowd()}' , l.blocked_till = '${time.convertDatePickerTimeToMySQLTime(time.DAYADD(constants.password_protection_policy_numbers.user_blocked_for_days))}' , l.incorrect_count = '${(result[0].incorrect_count) + 1}' WHERE l.user_Id = '${id}' AND l.status = '${constants.status.active}'`;
+                    let upQuery = `UPDATE login_incorrect_attempts l SET l.last_attempt = '${time.nowd()}' , l.blocked_till = '${time.convertDatePickerTimeToMySQLTime(time.DAYADD(constants.day_or_minutes_protection_policy_numbers.user_blocked_for_days))}' , l.incorrect_count = '${(result[0].incorrect_count) + 1}' WHERE l.user_Id = '${id}' AND l.status = '${constants.status.active}'`;
                     con.query(upQuery, (err, result1) =>
                     {
                         if(result1.length != 0)

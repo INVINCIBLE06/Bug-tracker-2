@@ -742,7 +742,6 @@ const convertDatePickerTimeToMySQLTime = (str) =>
     hours = ("0" + date.getHours()).slice(-2);
     minutes = ("0" + date.getMinutes()).slice(-2);
     seconds = ("0" + date.getSeconds()).slice(-2);
-
     var mySQLDate = [date.getFullYear(), month, day].join("-");
     var mySQLTime = [hours, minutes, seconds].join(":");
     return [mySQLDate, mySQLTime].join(" ");

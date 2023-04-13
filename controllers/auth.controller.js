@@ -9,7 +9,7 @@ const commonoperation = require('../helper/commonoperationfunctions');
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
-const CodeOrLinkVerification = require('../utils/VerifyEmailRequest');
+const CodeOrLinkVerification = require('../utils/sendingEmail');
 
 
 /**
@@ -232,22 +232,6 @@ exports.SignOut = (req, res) =>
         }
     });
 };
-
-// let checkblocked = await commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].User_Id)
-// if(checkblocked.length == 0)
-// {
-//     console.log("You cannot login now because you have exceeded you maximum incorrect password input limit")
-// }
-// else
-// {
-//     console.log("Here"); 
-//     commonoperation.insertincorrectpasswordcount(result[0].User_Id);
-// }
-
-
-
-
-
 
 /**
  * The below block of code is getting the activity of a particular user based on the user id 

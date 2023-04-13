@@ -1,5 +1,6 @@
 const con = require('../configs/db.config'); // importing the database detail and assigning the con variable 
 const constants = require('../utils/constants');
+
 module.exports = class user
 {
     constructor(){}

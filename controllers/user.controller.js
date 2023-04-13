@@ -2,6 +2,9 @@ const user = require('../models/user.model'); //importing the use module and ass
 const bcrypt = require('bcryptjs'); // importing the bcrypt js for hashing our password
 const constants = require('../utils/constants');
 
+const CodeOrLinkVerification = require('../utils/sendingEmail');
+
+
 // The below function is for forgot password.
 exports.ForgotPassword = async(req, res, next)=>
 {
@@ -226,3 +229,8 @@ exports.UpdateUserStatus = async (req, res) =>
     }
 };
 
+exports.PasswordResetLink = async (req , res, next) =>
+{
+    let link = CodeOrLinkVerification.GenerateResetLinkForPassword(req.params.id);
+
+}

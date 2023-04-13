@@ -73,9 +73,10 @@ module.exports = class operations
             try
             {
                 let CheckWhetherIncorrectPasswordEnteredOrNot =  await fetch.GetTheCountOfIncorrectPasswordEventHappend(id);
+                
                 if(CheckWhetherIncorrectPasswordEnteredOrNot.length != 0)
                 {
-                    let upQuery = `UPDATE login_incorrect_attempts l SET l.status = '${constants.status.inactive}' WHERE l.blocked_till IS NULL AND l.user_Id = '${id}'`;
+                    let upQuery = `UPDATE login_incorrect_attempts l SET l.status = '${constants.status.inactive}', l.updated_at = '${time.nowd()}' WHERE l.blocked_till IS NULL AND l.user_Id = '${id}' AND l.status = '${constants.status.active}' `;
                     con.query(upQuery, (err, result1) =>
                     {
                         if(result1.length != 0)
@@ -83,11 +84,6 @@ module.exports = class operations
                             console.log(` #### Since the user have entered correct password after incorrect. It is updated in the table #### `);
                             resolve(result1)
                         }
-                        // else if(result1.length == 0)
-                        // {
-                        //     console.log(` #### Since the user haven't attempted any incorrect entry of password. So no change can be made in the table #### `);
-                        //     resolve(result1)                     
-                        // }
                         else
                         {
                             console.log(` #### Error happen while updating the data in the login_incorrect_attempts. When user entered the correect password  ####  `, err.message);

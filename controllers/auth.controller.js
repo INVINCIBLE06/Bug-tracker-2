@@ -3,7 +3,7 @@ const authConfig = require('../configs/auth.config');
 const con = require('../configs/db.config'); // importing the database details
 const constants = require('../utils/constants'); // importing the constants file details
 
-const commonfunc = require('../helper/commonfetchingfunction');
+const commonfunc = require('../helper/commonfetchingfunction'); 
 const commonoperation = require('../helper/commonoperationfunctions');
 
 
@@ -344,14 +344,5 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) => {
 
 exports.CheckOTP = async (req , res) =>
 {
-    let result = await commonfunc.getUserDetailsByEmailCondition(req.body.email);
-    if(result)
-    {
-        console.log("Found")
-        commonfunc.isUserBlockedFromLoginAfterMaxPasswordAttempts(result[0].id)
-    }
-    else
-    {
-        console.log("Not Found");
-    }
+    
 }

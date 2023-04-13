@@ -1,5 +1,7 @@
 const con = require('../configs/db.config'); // importing the database detail and assigning the con variable 
 const constants = require('../utils/constants');
+const CodeOrLinkVerification = require('../utils/sendingEmail');
+const time = require('../models/ticket.model')
 
 module.exports = class user
 {
@@ -371,6 +373,70 @@ module.exports = class user
             });
         });
     };
+
+    static sendOTPcodetoemailforverification(id)
+    {
+        return new Promise(async (resolve, reject)=>
+        {
+            try 
+            {
+                var OTP = CodeOrLinkVerification.GenerateSixDigitOTPcode();
+                console.log(`The OTP is ${OTP}`);
+                console.log(time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3)))
+                let result = await CodeOrLinkVerification.SendGeneratedOTPCode(email, OTP);
+                if(result)
+                {
+                    console.log('Email sent successfully'); // You can return a response or perform any other action here
+                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3))}')`;
+                    con.query(InsQuery, (err, result) =>
+                    {
+                        if(result.length != 0)
+                        {
+                            console.log('OTP stored successfully'); // You can return a response or perform any other action here
+                            res.send
+                            ({
+                                success : true,
+                                code : 200,
+                                message : 'OTP sent successfully',
+                                OTP : OTP
+                            });
+                        }
+                        else
+                        {
+                            console.log('OTP not stored', err.message); // You can return a response or perform any other action here
+                            res.send
+                            ({
+                                success : true,
+                                code : 500,
+                                message : 'Internal server error',         
+                            });
+                        }
+                    });
+                }
+                else
+                {
+                    console.log('Email not sent'); // You can return a response or perform any other action here
+                    res.send
+                    ({
+                        success : true,
+                        code : 400,
+                        message : 'Error While Sending the email',         
+                    });
+                }        
+            } 
+            catch(error)
+            {
+                console.error('Error sending email:', error); // You can handle the error and return an appropriate response or perform any other action here
+            }            
+        });        
+    };
+
+
+
+
+
+
+
 };
 
 

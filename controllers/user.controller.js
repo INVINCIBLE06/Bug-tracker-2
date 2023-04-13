@@ -1,8 +1,8 @@
 const user = require('../models/user.model'); //importing the use module and assign it to user variable 
 const bcrypt = require('bcryptjs'); // importing the bcrypt js for hashing our password
 const constants = require('../utils/constants');
+const fetch = require('../helper/commonfetchingfunction'); 
 
-const CodeOrLinkVerification = require('../utils/sendingEmail');
 
 
 // The below function is for forgot password.
@@ -233,4 +233,27 @@ exports.PasswordResetLink = async (req , res, next) =>
 {
     let link = CodeOrLinkVerification.GenerateResetLinkForPassword(req.params.id);
 
+}
+
+/**
+ * Below function. I am writing is for email validation at the time registration it will be checked by sending a
+ * OTP or verification link.  
+ */
+exports.sendOTPcodeToEmailForVerification = async (req, res, next) => 
+{
+    let id = await fetch.getUserDetailsByEmailCondition(req.body.email);
+    let users = await user.sendOTPcodetoemailforverification(id);
+    // if(users)
+    // {
+
+    // }
+    // else
+    // {
+
+    // }
+};
+
+exports.CheckOTP = async (req , res) =>
+{
+    
 }

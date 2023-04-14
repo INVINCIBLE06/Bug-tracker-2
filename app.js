@@ -2,7 +2,7 @@ const express = require('express');  // importing the express library after inst
 const app = express(); // assingning the app variable with express variable function
 // const bodyParser = require('body-parser'); // Importing bodyParser library after installing it using npm i body-parser 
 const upload = require('express-fileupload');
-const deletetable = require('./Deletetable');
+const deletetable = require('./deletetable');
 // app.use(express.urlencoded({ extended: true }));
 // app.use(bodyParser.urlencoded({ extended: true })); // through this statement we can used the json data in the form data
 // app.use(bodyParser.json()); // through this statement we can used the json data in the json structure

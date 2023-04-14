@@ -73,4 +73,34 @@ module.exports = class fetching
             });
         });
     };
+
+    static getUserDetailsByIdCondition(id)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            let selQuery = `SELECT * FROM users u WHERE u.id = '${id}'`;
+            con.query(selQuery, (err, result) =>
+            {
+                if(result.length != 0)
+                {
+                    console.log(result)
+                    resolve(result)
+                }
+                else
+                {
+                    // console.log(err.message)
+                    resolve(result)
+                }
+            });             
+        });
+    };
+
+
+
+
+
+
+
+
+
 };

@@ -5,6 +5,7 @@ const fetch = require('../helper/commonfetchingfunction');
 
 
 
+
 // The below function is for forgot password.
 exports.ForgotPassword = async(req, res, next)=>
 {
@@ -229,9 +230,12 @@ exports.UpdateUserStatus = async (req, res) =>
     }
 };
 
-exports.PasswordResetLink = async (req , res, next) =>
+exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
-    let link = CodeOrLinkVerification.GenerateResetLinkForPassword(req.params.id);
+    let email = await fetch.getUserDetailsByIdCondition(req.param.id);
+    console.log(email)
+    // let users = await user.sendresetlinkforchangingthepassword(id);
+    // console.log(link)
 
 }
 

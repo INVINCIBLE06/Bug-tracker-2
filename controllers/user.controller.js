@@ -45,9 +45,9 @@ exports.getallusers = async(req, res, next) =>
                 success : true,
                 code : 200,
                 message : "User data successfully fetched",
-                data : {
+                data :  { 
                             users : users
-                       }
+                        }
             });
     }
     else
@@ -232,10 +232,10 @@ exports.UpdateUserStatus = async (req, res) =>
 
 exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
-    let email = await fetch.getUserDetailsByIdCondition(req.param.id);
-    console.log(email)
-    // let users = await user.sendresetlinkforchangingthepassword(id);
-    // console.log(link)
+    let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
+    // console.log(userDetails[0].email)
+    let users = await user.sendLink(userDetails[0].email, userDetails[0].id);
+    // console.log(users)
 
 }
 

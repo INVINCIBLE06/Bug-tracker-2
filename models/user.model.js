@@ -1,13 +1,17 @@
 const con = require('../configs/db.config'); // importing the database detail and assigning the con variable 
 const constants = require('../utils/constants');
-const CodeOrLinkVerification = require('../utils/sendingEmail');
-const time = require('../models/ticket.model')
+const time = require('../models/ticket.model');
+const linkOrOtp = require('../utils/generatecodeorlink');
+const sendEmail = require('../utils/sendEmail');
+
 
 module.exports = class user
 {
     constructor(){}
+
     // static addOne(name, author, price, adminid)
     // the below code is for creating or registering the user.
+    
     static async addOne(name, email, mobile, date_of_birth, status, security_answer, password, confirm_password, role, module)
     { 
         try 
@@ -380,10 +384,10 @@ module.exports = class user
         {
             try 
             {
-                var OTP = CodeOrLinkVerification.GenerateSixDigitOTPcode();
+                var OTP = linkOrOtp.GenerateSixDigitOTPcode();
                 console.log(`The OTP is ${OTP}`);
-                console.log(time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3)))
-                let result = await CodeOrLinkVerification.SendGeneratedOTPCode(email, OTP);
+                // console.log(time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3)))
+                let result = await sendEmail.SendGeneratedOTPCode(email, OTP);
                 if(result)
                 {
                     console.log('Email sent successfully'); // You can return a response or perform any other action here
@@ -431,6 +435,21 @@ module.exports = class user
         });        
     };
 
+    static sendLink(email, id)
+    {
+        return new Promise(async (resolve, reject) =>
+        {
+            try
+            {
+                var link = linkOrOtp.GenerateLink(id);
+                console.log(`The Link is ${link}`);      
+            } 
+            catch(error)
+            {
+                
+            }            
+        });
+    };
 
 
 

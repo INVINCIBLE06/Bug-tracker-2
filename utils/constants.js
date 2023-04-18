@@ -77,13 +77,18 @@ module.exports =
         number_of_incorrect_password_attempt : 5,
         user_blocked_for_days : 1,
         number_of_minutes_after_OTP_will_blocked : 3,
-        password_link_valid_till : 300
-
+        link_valid_till : 300
     },
 
     event_scheduler_status :
     {
         on : "ON",
         off : "OFF"
+    },
+
+    purpose :
+    {
+        Passwordreset : "Passwordreset",
+        emailVerfication : "emailVerfication"
     }
 };

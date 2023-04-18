@@ -1,11 +1,4 @@
 const nodemailer = require('nodemailer');
-const jwt = require('jsonwebtoken');
-const authConfig = require('../configs/auth.config');
-
-exports.GenerateSixDigitOTPcode = () =>
-{
-    return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP    
-}
 
 exports.SendGeneratedOTPCode = (to, otp) =>
 {
@@ -29,7 +22,7 @@ exports.SendGeneratedOTPCode = (to, otp) =>
             from : process.env.adminemail, // replace with your email address
             to : to, // recipient's email address
             subject : 'Email Verification',
-            text : `Your OTP for email verification is: ${otp}`
+            text : `Your OTP or Link for email verification is: ${otp}`
         };
         
         transporter.sendMail(mailOptions, (error, info) => 
@@ -47,9 +40,3 @@ exports.SendGeneratedOTPCode = (to, otp) =>
         });
     });
 };
-
-exports.GenerateResetLinkForPassword = (id) =>
-{
-    let token = jwt.sign({ id : id, purpose : "Passwordreset"}, authConfig.secret, {expiresIn : process.env.password_link_valid_till}) 
-    return token;        
-}

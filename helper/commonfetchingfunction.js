@@ -78,12 +78,13 @@ module.exports = class fetching
     {
         return new Promise((resolve, reject) =>
         {
-            let selQuery = `SELECT * FROM users u WHERE u.id = '${id}'`;
+            let selQuery = `SELECT * FROM users u WHERE u.id = '${id}' `;
             con.query(selQuery, (err, result) =>
             {
+                // console.log(result)
                 if(result.length != 0)
                 {
-                    console.log(result)
+                    // console.log(result)
                     resolve(result)
                 }
                 else

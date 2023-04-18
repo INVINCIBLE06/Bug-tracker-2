@@ -12,7 +12,7 @@ exports.SendGeneratedOTPCode = (to, otp) =>
             auth :
             {
                 user : 'sp832154@gmail.com', // replace with your email address
-                pass : 'qxvckcwpijjisufz' // replace with your email password
+                pass : 'ybpkooosqsbpboeu' // replace with your email password
             },
             secure : true,
         });
@@ -29,13 +29,13 @@ exports.SendGeneratedOTPCode = (to, otp) =>
         {
             if(error)
             {
-                console.error('Error sending email:', error);
-                // reject(error); // Reject the promise with the error
+                // console.error('Error sending email:', error);
+                reject(error); // Reject the promise with the error
             }
             else
             {
-                console.log('Email sent:', info.response);
-                // resolve(info.response); // Resolve the promise with the email response
+                // console.log('Email sent:', info.response);
+                resolve(info.response); // Resolve the promise with the email response
             }
         });
     });

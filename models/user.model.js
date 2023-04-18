@@ -3,7 +3,7 @@ const constants = require('../utils/constants');
 const time = require('../models/ticket.model');
 const linkOrOtp = require('../utils/generatecodeorlink');
 const sendEmail = require('../utils/sendEmail');
-
+const bcrypt = require('bcryptjs');  // importing the bcryptjs library
 
 module.exports = class user
 {
@@ -15,100 +15,107 @@ module.exports = class user
     static async addOne(name, email, mobile, date_of_birth, status, security_answer, password, confirm_password, role, module)
     { 
         try 
-        { 
-        return await new Promise((resolve, reject)=>
-        {      // the below for loop is adding the module id user id and role id in the permission table          
-            for(let i = 0 ; i < module.length; i++)
-            { // the below query is for  checking whehther the module names are correct or no
-                let selMQuery = `SELECT m.id FROM modules m WHERE m.module_name = '${module[i]}'`;
-                con.query(selMQuery, [module[i]], (err, resultma)=> // executing the above query
-                {
-                    var module_id = [];
-                    if(resultma.length != 0) // if there is module name available that was entered by the user, then this if block code will be executed
+        {
+            return await new Promise((resolve, reject)=>
+            {      
+                // the below for loop is adding the module id user id and role id in the permission table          
+                for(let i = 0 ; i < module.length; i++)
+                { 
+                    // the below query is for  checking whehther the module names are correct or no
+                    let selMQuery = `SELECT m.id FROM modules m WHERE m.module_name = '${module[i]}'`;
+                    con.query(selMQuery, [module[i]], (err, resultma)=> // executing the above query
                     {
-                        module_id[i] = resultma; // assigning the result variable data to a module array variable          
-                                // the below query is just for checking whether that rolename is available or not that was entered by the user.
-                                let selQuery = `SELECT * FROM roles r WHERE r.role_name = '${role}'`;
-                                con.query(selQuery, [role], (err, result)=> // executing the above query
+                        var module_id = [];
+                        if(resultma.length != 0) // if there is module name available that was entered by the user, then this if block code will be executed
+                        {
+                            module_id[i] = resultma; // assigning the result variable data to a module array variable          
+                            // the below query is just for checking whether that rolename is available or not that was entered by the user.
+                            let selQuery = `SELECT * FROM roles r WHERE r.role_name = '${role}'`;
+                            con.query(selQuery, [role], (err, result)=> // executing the above query
+                            {
+                                if(result.length != 0) // if the role is available then if block
                                 {
-                                    if(result.length != 0) // if the role is available then if block
+                                    if(i == 0)
                                     {
-                                                if(i == 0)
-                                                {  // the below insert query is for inserting into the user table. All the values are entered by the user in the req body
-                                                    let insQuery = `INSERT INTO users(name, email, mobile, date_of_birth, status, security_answer, password, confirm_password, role_Id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${result[0].id})`;
-                                                    con.query(insQuery, [name, email, mobile, date_of_birth, status, security_answer, password, confirm_password], (err, result1)=> // executing the above query
-                                                        {
-                                                            if(result1.length != 0) // if the insert query is successfuly executed
-                                                                { // finding the user on the basis of email that ws entered by the req email 
-                                                                    let selFPEQuery = `SELECT * FROM users u WHERE u.email = '${email}'`;
-                                                                    con.query(selFPEQuery, [email], (err, resultFPE)=> // executing the above query
-                                                                    {
-                                                                        if(resultFPE.length != 0) // if we found the user based on the email then this if block code will be executed
-                                                                        {   // the below insert query is for inserting into the permission table.
-                                                                            let InsPQuery = `INSERT INTO permissions (user_Id, role_Id, module_Id) VALUES (${resultFPE[0].id},${result[0].id},${resultma[0].id})`;
-                                                                            con.query(InsPQuery, (err, resultPI) => // executing the above query
-                                                                            {                                                                          
-                                                                                if(resultPI.length != 0) // if we inserted the data into the permission table, then this if block code will be executed 
-                                                                                {
-                                                                                   console.log("First into the permission table");
-                                                                                   resolve('true'); // result sent back to the controller. From where it is called
-                                                                                }
-                                                                                else // IF any error encountered while inserting the data into the permission table
-                                                                                {
-                                                                                    console.log("Error while entering the data into the Permission table for the first Time:- ", err);
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                        else // if we did not found the user based on the email then this else block code will be executed
-                                                                        {
-                                                                            console.log("Error while searching for the user id after it's entered into the datbase for the first iteration");
-                                                                        }
-                                                                    });                                                           
-                                                                }
-                                                            else // if we encounter any error while entering the data in the user 
-                                                                {
-                                                                    console.log('Error while insert the user to the database')
-                                                                    reject(err); // error will send back to the controller. From where it is called
-                                                                }                                
-                                                        });
-                                                        i = i + 1; // updating the i variable
-                                                }
-                                                else if(i <= module.length) // checking the i variable value is less than module length
-                                                { // finding the user on the basis of email that ws entered by the req email 
-                                                    let selAPESQuery = `SELECT * FROM users u WHERE u.email = '${email}'`;
-                                                    con.query(selAPESQuery, [email], (err, resultAPES)=> // executing the above query
+                                        // the below insert query is for inserting into the user table. All the values are entered by the user in the req body
+                                        let insQuery = `INSERT INTO users(name, email, mobile, date_of_birth, status, security_answer, password, confirm_password, role_Id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ${result[0].id})`;
+                                        con.query(insQuery, [name, email, mobile, date_of_birth, status, security_answer, password, confirm_password], (err, result1)=> // executing the above query
+                                        {
+                                            if(result1.length != 0) // if the insert query is successfuly executed
+                                            { 
+                                                // finding the user on the basis of email that ws entered by the req email 
+                                                let selFPEQuery = `SELECT * FROM users u WHERE u.email = '${email}'`;
+                                                con.query(selFPEQuery, [email], (err, resultFPE)=> // executing the above query
+                                                {
+                                                    if(resultFPE.length != 0) // if we found the user based on the email then this if block code will be executed
                                                     {
-                                                        if(resultAPES != 0) // if we got the user we will go inside the if block code
-                                                        { // the below insert query is for inserting into the permission table.
-                                                            let InsAPQuery = `INSERT INTO permissions (user_Id, role_Id, module_Id) VALUES (${resultAPES[0].id},${result[0].id},${resultma[0].id})`
-                                                            con.query(InsAPQuery, (err, resultAP) => // executing the above query
-                                                            {
-                                                                if(resultAP.length != 0 ) // if we inserted the data into the permission table, then this if block code will be executed 
-                                                                {
-                                                                    console.log(`"${resultma[0].id}" time into the permission table`)
-                                                                    resolve('true'); // result sent back to the controller. From where it is called
-                                                                }
-                                                                else // IF any error encountered while inserting the data into the permission table
-                                                                {
-                                                                    console.log(`Error while entering the data into the Permission table for the "${resultma[0].id}" iteration :- `, err);
-                                                                }
-                                                            });
-                                                        }
-                                                        else // if we did not found the user based on the email then this else block code will be executed
+                                                        // the below insert query is for inserting into the permission table.
+                                                        let InsPQuery = `INSERT INTO permissions (user_Id, role_Id, module_Id) VALUES (${resultFPE[0].id},${result[0].id},${resultma[0].id})`;
+                                                        con.query(InsPQuery, (err, resultPI) => // executing the above query
                                                         {
-                                                            console.log(`Error While serching the userId after it entered into the databse for the "${resultma[0].id}" :-`, err);
-                                                        }
-                                                    });
-                                                    i = i + 1; // updating the i variable
-                                                }                                                                        
-                                    } 
-                                    else // if any encountered while searching for the rolename entered by the user
-                                    {
-                                        console.log("This role is not available")
-                                        reject(err); // error will send back to the controller. From where it is called                            
+                                                            if(resultPI.length != 0) // if we inserted the data into the permission table, then this if block code will be executed 
+                                                            {
+                                                                //console.log("First into the permission table");
+                                                                resolve('true'); // result sent back to the controller. From where it is called
+                                                            }
+                                                            else // IF any error encountered while inserting the data into the permission table
+                                                            {
+                                                                console.log("Error while entering the data into the Permission table for the first Time:- ", err);
+                                                            }
+                                                        });
+                                                    }
+                                                    else // if we did not found the user based on the email then this else block code will be executed
+                                                    {
+                                                        console.log("Error while searching for the user id after it's entered into the datbase for the first iteration");
+                                                    }
+                                                });                                                           
+                                            }
+                                            else // if we encounter any error while entering the data in the user 
+                                            {
+                                                console.log('Error while insert the user to the database')
+                                                reject(err); // error will send back to the controller. From where it is called
+                                            }                                
+                                        });
+                                        i = i + 1; // updating the i variable
                                     }
-                                });
-                            }
+                                    else if(i <= module.length) // checking the i variable value is less than module length
+                                    {
+                                        // finding the user on the basis of email that ws entered by the req email 
+                                        let selAPESQuery = `SELECT * FROM users u WHERE u.email = '${email}'`;
+                                        con.query(selAPESQuery, [email], (err, resultAPES)=> // executing the above query
+                                        {
+                                            if(resultAPES != 0) // if we got the user we will go inside the if block code
+                                            { 
+                                                // the below insert query is for inserting into the permission table.
+                                                let InsAPQuery = `INSERT INTO permissions (user_Id, role_Id, module_Id) VALUES (${resultAPES[0].id},${result[0].id},${resultma[0].id})`
+                                                con.query(InsAPQuery, (err, resultAP) => // executing the above query
+                                                {
+                                                    if(resultAP.length != 0 ) // if we inserted the data into the permission table, then this if block code will be executed 
+                                                    {
+                                                        // console.log(`"${resultma[0].id}" time into the permission table`)
+                                                        resolve('true'); // result sent back to the controller. From where it is called
+                                                    }
+                                                    else // IF any error encountered while inserting the data into the permission table
+                                                    {
+                                                        console.log(`Error while entering the data into the Permission table for the "${resultma[0].id}" iteration :- `, err);
+                                                    }
+                                                });
+                                            }
+                                            else // if we did not found the user based on the email then this else block code will be executed
+                                            {
+                                                console.log(`Error While serching the userId after it entered into the databse for the "${resultma[0].id}" :-`, err);
+                                            }
+                                        });
+                                        i = i + 1; // updating the i variable
+                                    }                                                                        
+                                } 
+                                else // if any encountered while searching for the rolename entered by the user
+                                {
+                                    console.log("This role is not available")
+                                    reject(err); // error will send back to the controller. From where it is called                            
+                                }
+                            });
+                        }
                     });
                 }  
             });
@@ -140,7 +147,7 @@ module.exports = class user
                                 {
                                     if(result3.length != 0 ) // If the update query is successfully executed
                                         {
-                                            console.log("Password updated successfully");
+                                            // console.log("Password updated successfully");
                                             resolve('true'); // result sent back to the controller. From where it is called
                                         }
                                         else // if any error encourted while updating the password
@@ -378,54 +385,37 @@ module.exports = class user
         });
     };
 
-    static sendOTPcodetoemailforverification(id)
+    static async sendOTPcodetoemailforverification(id, email)
     {
         return new Promise(async (resolve, reject)=>
         {
             try 
             {
                 var OTP = linkOrOtp.GenerateSixDigitOTPcode();
-                console.log(`The OTP is ${OTP}`);
-                // console.log(time.convertDatePickerTimeToMySQLTime(time.minutesAdd(3)))
+                // console.log(`The OTP is ${OTP}`);
                 let result = await sendEmail.SendGeneratedOTPCode(email, OTP);
                 if(result)
                 {
-                    console.log('Email sent successfully'); // You can return a response or perform any other action here
-                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}')`;
+                    // console.log('Email sent successfully'); // You can return a response or perform any other action here
+                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP.toString(), 8)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}')`;
                     con.query(InsQuery, (err, result) =>
                     {
                         if(result.length != 0)
                         {
-                            console.log('OTP stored successfully'); // You can return a response or perform any other action here
-                            res.send
-                            ({
-                                success : true,
-                                code : 200,
-                                message : 'OTP sent successfully',
-                                OTP : OTP
-                            });
+                            // console.log('OTP stored successfully'); // You can return a response or perform any other action here
+                            resolve(true)                            
                         }
                         else
                         {
                             console.log('OTP not stored', err.message); // You can return a response or perform any other action here
-                            res.send
-                            ({
-                                success : true,
-                                code : 500,
-                                message : 'Internal server error',         
-                            });
+                            reject(err)
                         }
                     });
                 }
                 else
                 {
                     console.log('Email not sent'); // You can return a response or perform any other action here
-                    res.send
-                    ({
-                        success : true,
-                        code : 400,
-                        message : 'Error While Sending the email',         
-                    });
+                    reject(err)
                 }        
             } 
             catch(error)
@@ -458,5 +448,5 @@ module.exports = class user
 
 };
 
-
+ 
 

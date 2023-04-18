@@ -245,16 +245,28 @@ exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
  */
 exports.sendOTPcodeToEmailForVerification = async (req, res, next) => 
 {
-    let id = await fetch.getUserDetailsByEmailCondition(req.body.email);
-    let users = await user.sendOTPcodetoemailforverification(id);
-    // if(users)
-    // {
+    let user_details = await fetch.getUserDetailsByEmailCondition(req.body.email);
+    let users = await user.sendOTPcodetoemailforverification(user_details[0].id, user_details[0].email);
+    // console.log(users)
+    if(users)
+    {
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : 'OTP sent successfully',
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            success : true,
+            code : 500,
+            message : 'Internal server error',         
+        });
 
-    // }
-    // else
-    // {
-
-    // }
+    }
 };
 
 exports.CheckOTP = async (req , res) =>

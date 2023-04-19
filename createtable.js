@@ -184,7 +184,7 @@ module.exports = async function()
                                                                                                                          DO
                                                                                                                          BEGIN
                                                                                                                          UPDATE tickets t SET t.priority = '${constants.priority.urgent}'
-                                                                                                                         WHERE (SELECT DATEDIFF(tickets.created_at, tickets.expired_at)) > '${constants.tickets_expiration_deadline_day}' 
+                                                                                                                         WHERE (SELECT DATEDIFF(tickets.created_at, tickets.expired_at)) > '${constants.day_or_minutes_protection_policy_numbers.tickets_expiration_deadline_day}' 
                                                                                                                          AND t.priority = '${constants.priority.normal}' 
                                                                                                                          AND t.status = '${constants.status.open}'
                                                                                                                          OR t.status = '${constants.status.pending}'

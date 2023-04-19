@@ -122,7 +122,7 @@ module.exports = async function()
                                                                                                         }
                                                                                                         else
                                                                                                         {
-                                                                                                            console.log(" #### Error while deleting checkticketexiparation event. #### " /**, err */);  
+                                                                                                            console.log(" #### Error while deleting OTPisexpired event #### " /**, err */);  
                                                                                                             rl.close(); // This will close the interface created by readline.createInterface
                                                                                                             return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
                                                                                                         }
@@ -232,9 +232,9 @@ module.exports = async function()
             });                   
         });
     }
-    catch(error)
+    catch(error) 
     {
-        console.log("Error occurs in the deletetable file try catch both");
+        console.log("Error occurs in the deletetable file try catch both"); 
     }
 };
 

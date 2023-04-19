@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const authConfig = require('../configs/auth.config');
 const constants = require('./constants');
-require('dotenv').config();
+
 
 exports.GenerateSixDigitOTPcode = () =>
 {

@@ -160,7 +160,7 @@ module.exports = class ticket
      * There are 2 type of priority (NORMAL, URGENT)
      * While creating the ticket it is By default is NORMAL
      */
-    static AutomaticUpdateticketAfterParticularTime(status)
+    static AutomaticUpdateticketAfterParticularTime()
     {
         return new Promise((resolve, reject)=>
         { // the below route will give us all the ticket which have differenc in created at ticket and expired at ticket. All the tickets have that so all the ticket will go for the check
@@ -519,7 +519,7 @@ module.exports = class ticket
                         con.query(UpdateQuery, (err, result1) => // executing the above query
                         {
                             if(result1.length != 0) // if ticket updated then if block
-                            { // the below line is for inserting into the message table because we are also storing the a remark. 
+                            { // the        below line is for inserting into the message table because we are also storing the a remark. 
                                 let InsQuery = `INSERT INTO messages(assignee_Id, reporter_Id, ticket_Id ,message, sender_role) VALUES ( '${resultU[0].assignee_Id}', '${resultU[0].reporter_Id}', '${id}', '${message}', '${constants.role.admin}')`;
                                 con.query(InsQuery, (err, result2) => // executing the above query
                                 {

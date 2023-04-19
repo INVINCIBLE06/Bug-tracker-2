@@ -69,15 +69,13 @@ module.exports =
         viewallticket : "View All Ticket"
     },
 
-    tickets_expiration_deadline_day : 2,
-
-
     day_or_minutes_protection_policy_numbers :
     {
         number_of_incorrect_password_attempt : 5,
         user_blocked_for_days : 1,
         number_of_minutes_after_OTP_will_blocked : 3,
-        link_valid_till : 300
+        link_valid_till : 300,
+        tickets_expiration_deadline_day : 2,
     },
 
     event_scheduler_status :

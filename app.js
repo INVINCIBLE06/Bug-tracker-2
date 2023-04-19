@@ -11,7 +11,6 @@ app.use(upload()); // We are using the upload file which have all the functional
 
 // deletetable();
 
-
 require("./routes/auth.route")(app); // importing the auth routes data from the route folder
 require("./routes/role.route")(app); // importing the role routes data from the route folder
 require("./routes/user.route")(app); // importing the user routes data from the route folder

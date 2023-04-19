@@ -70,7 +70,7 @@ module.exports = async function()
                     { // if thr role is available then this if block code will be executed
                         if(result.length != 0)
                         { // The below query will be used to enter the admin data to the user table. The admin data is in the env file.
-                            let insQuery = `INSERT INTO users(name, email, mobile, date_of_birth, status, security_answer, password, confirm_password, role_id) VALUES ('${process.env.adminname}', '${process.env.adminemail}', '${process.env.adminmobile}', '${process.env.admindateofbirth}', '${constants.status.active}', '${process.env.adminanswer}', '${bcrypt.hashSync(process.env.adminpassword, 8)}', '${bcrypt.hashSync(process.env.adminconfirmpassword, 8)}', '${result[0].id}')`;
+                            let insQuery = `INSERT INTO users(name, email, email_verified , mobile, date_of_birth, status, security_answer, password, confirm_password, role_id) VALUES ('${process.env.adminname}', '${process.env.adminemail}', '${constants.status.verified}', '${process.env.adminmobile}', '${process.env.admindateofbirth}', '${constants.status.active}', '${process.env.adminanswer}', '${bcrypt.hashSync(process.env.adminpassword, 8)}', '${bcrypt.hashSync(process.env.adminconfirmpassword, 8)}', '${result[0].id}')`;
                             con.query(insQuery, (err, result)=> // Executing the above query
                             {
                                 if(result) // If the data is successfully entered. The data must be there in the environment file. Otherwise it will through an error

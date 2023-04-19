@@ -31,7 +31,9 @@ module.exports =
         working : "WORKING",
         pending : "PENDING",
         active : "ACTIVE",
-        inactive : "INACTIVE"
+        inactive : "INACTIVE",
+        verified : "VERIFIED",
+        notverified : "NOT-VERIFIED"
     },
 
     activity :

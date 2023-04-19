@@ -32,4 +32,6 @@ module.exports = function(app)
 
     app.post('/user/send/otp', emailvalidation, usercontroller.sendOTPcodeToEmailForVerification);
 
+    app.post('/validate/otp/:id', verifyparams.UserIdIsCorrectInParams , usercontroller.CheckOTP);
+
 };

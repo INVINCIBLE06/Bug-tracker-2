@@ -392,16 +392,16 @@ module.exports = class user
             try 
             {
                 var OTP = linkOrOtp.GenerateSixDigitOTPcode();
-                // console.log(`The OTP is ${OTP}`);
+                console.log(`The OTP is ${OTP}`);
                 let result = await sendEmail.SendGeneratedOTPCode(email, OTP);
                 if(result)
                 {
                     // console.log('Email sent successfully'); // You can return a response or perform any other action here
-                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync(OTP.toString(), 8)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}')`;
+                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync((OTP.toString()), 8)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}' )`;
                     con.query(InsQuery, (err, result) =>
                     {
                         if(result.length != 0)
-                        {
+                        { 
                             // console.log('OTP stored successfully'); // You can return a response or perform any other action here
                             resolve(true)                            
                         }
@@ -441,8 +441,69 @@ module.exports = class user
         });
     };
 
-
-
+    static async checkOTP(id, OTP)
+    {
+        return new Promise (async (resolve, reject) =>
+        {
+            try
+            {
+                let selQuery = `SELECT * FROM otpstores os WHERE os.user_Id = '${id}' AND os.status = '${constants.status.active}' AND os.updated_at IS NULL`;
+                con.query(selQuery, async (err , result) =>
+                {
+                    if(result)
+                    {
+                        bcrypt.compare(OTP, result[0].otp, (err, result1) =>
+                        {
+                            if(result1)
+                            {
+                                console.log("OTP matched");
+                                let selQuery = `SELECT * FROM otpstores os WHERE os.user_Id = '${id}' AND os.status = '${constants.status.active}' AND os.updated_at IS NULL`;
+                                con.query(selQuery, (err, result2) =>
+                                {
+                                    if(result2)
+                                    {
+                                        let UpdateQuery = `UPDATE users u SET u.email_verified = '${constants.status.verified}' WHERE u.id = '${id}' `;
+                                        con.query(UpdateQuery, (err, result3) =>
+                                        {
+                                            if(result3)
+                                            {
+                                                console.log(`Email updated from '${constants.status.notverified}' to '${constants.status.verified}'`);
+                                                resolve('true'); 
+                                            }    
+                                            else
+                                            {
+                                                console.log(`Error while updating email from '${constants.status.notverified}' to '${constants.status.verified}'`, err)
+                                                resolve('err');
+                                            }                             
+                                        });
+                                    }
+                                    else
+                                    {
+                                        console.log('Error while fetching the active OTP after it is matched', err)
+                                        resolve('expired-OTP')
+                                    }
+                                });                          
+                            }
+                            else
+                            {
+                                console.log("OTP is not matched", err);
+                                resolve('wrong-OTP') 
+                            }
+                        });
+                    }
+                    else
+                    {
+                        console.log('Error while fetching the active OTP', err);
+                        resolve('err');
+                    }
+                });
+            }
+            catch(err)
+            {
+                console.log(`Error while validating the OTP`, err);                
+            }
+        });
+    };
 
 
 
@@ -450,3 +511,4 @@ module.exports = class user
 
  
 
+ 

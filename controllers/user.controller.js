@@ -271,5 +271,67 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) =>
 
 exports.CheckOTP = async (req , res) =>
 {
-    
-}
+    const regex = (/^[0-9]+$/); 
+    if(!(regex.test(req.body.otp)))
+    {
+        res.send
+        ({
+            success : false,
+            code : 400,
+            message : "You have entered letters. OTP only contains numbers"
+        });        
+    }
+    else
+    {
+        if((req.body.otp).length == 6)
+        {
+            let users = await user.checkOTP(req.params.id, req.body.otp);
+            if(users === 'true')
+            {
+                res.send
+                ({
+                    success : true,
+                    code : 200,
+                    message : "Email is verified"
+                });
+            }
+            if(users === 'wrong-OTP')
+            {
+                res.send
+                ({
+                    success : false,
+                    code : 404,
+                    message : "Incorrect OTP entered. Please enter the correct OTP"
+                });
+            }
+            if(users === 'err')
+            {
+                res.send
+                ({
+                    success : false,
+                    code : 500,
+                    message : "Internal server error. Please try again after few minutes"
+                });
+            }
+            if(user === 'expired-OTP')
+            {
+                res.send
+                ({
+                    success : false,
+                    code : 404,
+                    message : "You are late on entring the OTP. It is expired now. Please request again for the OTP"
+                });
+
+            }
+        }
+        else
+        {
+            res.send
+            ({
+                success : false,
+                code : 400,
+                message : "OTP contain only 6 numbers"
+            });
+        }
+    }
+};

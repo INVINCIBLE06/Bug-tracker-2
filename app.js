@@ -9,7 +9,7 @@ const deletetable = require('./deletetable');
 app.use(express.json()); // This line is adding middleware to the app that parses incoming request bodies with JSON payloads. It allows us to access request data sent in JSON format through the `req.body` property in our route handlers.
 app.use(upload()); // We are using the upload file which have all the functionalities of
 
-deletetable();
+// deletetable();
 
 require("./routes/auth.route")(app); // importing the auth routes data from the route folder
 require("./routes/role.route")(app); // importing the role routes data from the route folder

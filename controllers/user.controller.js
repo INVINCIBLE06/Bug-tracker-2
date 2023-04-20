@@ -236,6 +236,25 @@ exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
     // console.log(userDetails[0].email)
     let users = await user.sendLink(userDetails[0].email, userDetails[0].id);
     // console.log(users)
+    if(users)
+    {
+        res.send
+        ({
+            code : 200,
+            success : true,
+            message : "Link genrated",
+            Link : users
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            code : 500,
+            success : false,
+            message : "Internal Server Error",
+        });
+    }
 
 }
 
@@ -261,13 +280,20 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) =>
     {
         res.send
         ({
-            success : true,
+            success : false,
             code : 500,
             message : 'Internal server error',         
         });
 
     }
 };
+
+exports.ResetPasswordThroughLink = async (req, res) =>
+{
+
+}
+
+
 
 exports.CheckOTP = async (req , res) =>
 {

@@ -24,7 +24,8 @@ exports.GenerateLink = (id) =>
         {
             expiresIn : constants.day_or_minutes_protection_policy_numbers.link_valid_till
         });
-        let link = `${process.env.APP_URL}/get/${constants.purpose.Passwordreset}/link/${token}` ;
+        
+        let link = `${process.env.APP_URL}/bugtracker/${constants.purpose.Passwordreset}/${token}` ;
         return link;
     }
     catch(err)

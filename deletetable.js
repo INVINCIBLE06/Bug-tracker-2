@@ -104,11 +104,11 @@ module.exports = async function()
                                                                                                             rl.close();
                                                                                                             console.log('-------------------------------------------------------------------------------------');
                                                                                                             var rl2 = readline.createInterface(process.stdin, process.stdout);
-                                                                                                            rl2.question(" #### Tables and their data both are deleted. Do you want create the table now (YES/NO) #### \n ", function (string2) 
+                                                                                                            rl2.question(" #### Tables and their data both are deleted. Do you want create the table now (YES/NO) #### \n ", function (string3) 
                                                                                                             {
-                                                                                                                if((string2.toLocaleUpperCase()) == constants.allow.yes)
+                                                                                                                if((string3.toLocaleUpperCase()) == constants.allow.yes)
                                                                                                                 {
-                                                                                                                    // rl2.close();
+                                                                                                                    rl2.close();
                                                                                                                     createtable(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
                                                                                                                     return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines
                                                                                                                 }

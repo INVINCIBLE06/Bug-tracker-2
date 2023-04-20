@@ -45,30 +45,29 @@ module.exports = async function()
                             { // the below query is for the creating the ticket table
                                 console.log(' #### User table successfully created #### ');
                                 let ctrQury3 = `CREATE TABLE tickets(
-                                    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-                                    title VARCHAR(255) NOT NULL,
-                                    description varchar(255) NOT NULL,
-                                    reporter varchar(255) NOT NULL,
-                                    assignee varchar(255) NOT NULL,
-                                    priority ENUM ('${constants.priority.normal}', '${constants.priority.urgent}') DEFAULT '${constants.priority.normal}',
-                                    status ENUM ('${constants.status.open}', '${constants.status.pending}', '${constants.status.closed}', '${constants.status.working}', '${constants.status.resolved}') DEFAULT '${constants.status.open}',
-                                    image_name VARCHAR(255),
-                                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                    expired_at DATETIME,
-                                    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-                                    reporter_Id INT,
-                                    FOREIGN KEY(reporter_Id) REFERENCES users(id),
-                                    assignee_Id INT,
-                                    FOREIGN KEY(assignee_Id) REFERENCES users(id),
-                                    INDEX index2(id, reporter_Id, assignee_Id)
-                                    )`;
+                                                id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                                title VARCHAR(255) NOT NULL,
+                                                description varchar(255) NOT NULL,
+                                                reporter varchar(255) NOT NULL,
+                                                assignee varchar(255) NOT NULL,
+                                                priority ENUM ('${constants.priority.normal}', '${constants.priority.urgent}') DEFAULT '${constants.priority.normal}',
+                                                status ENUM ('${constants.status.open}', '${constants.status.pending}', '${constants.status.closed}', '${constants.status.working}', '${constants.status.resolved}') DEFAULT '${constants.status.open}',
+                                                image_name VARCHAR(255),
+                                                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                expired_at DATETIME,
+                                                updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                                                reporter_Id INT,
+                                                FOREIGN KEY(reporter_Id) REFERENCES users(id),
+                                                assignee_Id INT,
+                                                FOREIGN KEY(assignee_Id) REFERENCES users(id),
+                                                INDEX index2(id, reporter_Id, assignee_Id)
+                                                )`;
                                 con.query(ctrQury3, (err, resultm3) => // executing the above query
                                 { 
                                     if(resultm3.length != 0) // If the ticket table is successfully created then this if block code
                                     {
                                         console.log(' #### Ticket table successfully created #### ');  // the below query is for the creating the modules table
-                                        let ctrQury4 = `CREATE TABLE modules
-                                                        (
+                                        let ctrQury4 = `CREATE TABLE modules(
                                                         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                                         module_name VARCHAR(255) NOT NULL,
                                                         active ENUM ('${constants.allow.yes}', '${constants.allow.no}') DEFAULT '${constants.allow.yes}',
@@ -161,7 +160,7 @@ module.exports = async function()
                                                                                         let prcCre = `CREATE PROCEDURE insertintousers_activities(ip_address1 VARCHAR(255), user_id1 INT, activity1 VARCHAR(255), description1 VARCHAR(255))
                                                                                                       BEGIN
                                                                                                       INSERT INTO users_activities(ip_address, user_id, activity, description) VALUES(ip_address1, user_id1, activity1, description1);
-                                                                                                      END`;
+                                                                                                      END`; 
                                                                                         con.query(prcCre, (err, resultm10) => // executing the above query
                                                                                         {
                                                                                             if(resultm10.length != 0) // If the insertintousers_activities stored procedure is successfully created then this if block code
@@ -329,19 +328,19 @@ module.exports = async function()
                                                                                                                                                                                                 console.log(' #### All Events are created #### ');
                                                                                                                                                                                                 console.log(' #### All tables are created #### ');
                                                                                                                                                                                                 console.log('-------------------------------------------------------------------------------------');
-                                                                                                                                                                                                var rl3 = readline.createInterface(process.stdin, process.stdout);
-                                                                                                                                                                                                rl3.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO) #### \n ", function (string3) 
+                                                                                                                                                                                                
+                                                                                                                                                                                                var rl = readline.createInterface(process.stdin, process.stdout);
+                                                                                                                                                                                                rl.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO) #### \n ", function (string3) 
                                                                                                                                                                                                 {
                                                                                                                                                                                                     if((string3.toLocaleUpperCase()) == constants.allow.yes)
                                                                                                                                                                                                     {
+                                                                                                                                                                                                        rl.close();
                                                                                                                                                                                                         init(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
-                                                                                                                                                                                                        rl3.close();
-                                                                                                                                                                                                        return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines                                                                                                                                                                       
                                                                                                                                                                                                     }
                                                                                                                                                                                                     else
                                                                                                                                                                                                     {
                                                                                                                                                                                                         console.log(' #### Data is not inserted into the database. As per your request #### ');
-                                                                                                                                                                                                        rl3.close();
+                                                                                                                                                                                                        rl.close();
                                                                                                                                                                                                         return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
                                                                                                                                                                                                     }
                                                                                                                                                                                                 });

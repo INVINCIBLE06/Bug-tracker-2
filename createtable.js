@@ -9,8 +9,10 @@ module.exports = async function()
     try 
     {
         con.connect(function(err) // Making connection with the database
-        { // the below query is for the creating the role table
-           let ctrQury = `CREATE TABLE roles(id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        { 
+           // the below query is for the creating the role table
+           let ctrQury = `CREATE TABLE roles(
+                          id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
                           role_name VARCHAR(50),
                           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                           updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP )`;
@@ -328,19 +330,18 @@ module.exports = async function()
                                                                                                                                                                                                 console.log(' #### All Events are created #### ');
                                                                                                                                                                                                 console.log(' #### All tables are created #### ');
                                                                                                                                                                                                 console.log('-------------------------------------------------------------------------------------');
-                                                                                                                                                                                                
-                                                                                                                                                                                                var rl = readline.createInterface(process.stdin, process.stdout);
-                                                                                                                                                                                                rl.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO) #### \n ", function (string3) 
+                                                                                                                                                                                                var rl3 = readline.createInterface(process.stdin, process.stdout);
+                                                                                                                                                                                                rl3.question(" #### Tables are created successfully. Do you want to enter the data into the table (YES/NO). Please type yes 2 times #### \n ", function(string3) 
                                                                                                                                                                                                 {
                                                                                                                                                                                                     if((string3.toLocaleUpperCase()) == constants.allow.yes)
                                                                                                                                                                                                     {
-                                                                                                                                                                                                        rl.close();
+                                                                                                                                                                                                        rl3.close();
                                                                                                                                                                                                         init(); // We are calling the createtable variable. Which have all the code for creating the tables. If we will remove or comment this then table will be not created
                                                                                                                                                                                                     }
                                                                                                                                                                                                     else
                                                                                                                                                                                                     {
                                                                                                                                                                                                         console.log(' #### Data is not inserted into the database. As per your request #### ');
-                                                                                                                                                                                                        rl.close();
+                                                                                                                                                                                                        rl3.close();
                                                                                                                                                                                                         return; // If the code will come here then the compiler will come out of the function direclty from here without executing the next lines 
                                                                                                                                                                                                     }
                                                                                                                                                                                                 });

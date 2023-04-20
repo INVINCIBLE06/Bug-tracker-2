@@ -2,6 +2,8 @@ const usercontroller = require('../controllers/user.controller');  // importing 
 const { emailvalidation } = require("../middlewares/email.middleware"); // importing the email validation
 const { passwordvalidation } = require("../middlewares/password.middleware"); // importing the password validation 
 const verifyparams = require('../middlewares/verifyparams'); // Importing the middlware for the validation of body and params data
+const constants = require('../utils/constants');
+const tokenVerification = require('../middlewares/token.verification'); 
 
 
 module.exports = function(app)
@@ -27,11 +29,15 @@ module.exports = function(app)
     app.put('/update/user/status/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.UpdateUserStatus);
     // through this below route we will be having the information for all the user. Only the Id which is submiited in the pamras. That users information will not be fetched
     app.get('/get/all/user/not/logged/one/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.GetAllUserWithOutTheLoggedOne);
-    
+/* ___________________________________________________________________________________________________________________________________________ */
+
     app.get('/get/reset/password/link/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.SendResetLinkForChangingThePassword);
 
-    app.post('/user/send/otp', emailvalidation, usercontroller.sendOTPcodeToEmailForVerification);
+    app.post(`/user/send/otp`, emailvalidation, usercontroller.sendOTPcodeToEmailForVerification);
 
     app.post('/validate/otp/:id', verifyparams.UserIdIsCorrectInParams , usercontroller.CheckOTP);
+
+    app.get(`/bugtracker/${constants.purpose.Passwordreset}/:token`, tokenVerification.resetPassword, usercontroller.ResetPasswordThroughLink);
+
 
 };

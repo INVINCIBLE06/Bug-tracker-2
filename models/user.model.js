@@ -432,11 +432,12 @@ module.exports = class user
             try
             {
                 var link = linkOrOtp.GenerateLink(id);
-                console.log(`The Link is ${link}`);      
+                // console.log(`The Link is ${link}`);
+                resolve(link);      
             } 
             catch(error)
             {
-                
+                resolve(error);
             }            
         });
     };

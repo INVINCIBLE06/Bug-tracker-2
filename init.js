@@ -9,44 +9,45 @@ const constants = require('./utils/constants'); // Importing the constant detail
 
 module.exports = async function() 
 {
-        // making the connection with the database
-        con.connect(function(err)
+    // making the connection with the database
+    con.connect(function(err)
+    {
+        /**
+        * Searching whether the admin role is already available. If available then it will not enter
+        * the data ewxits from here
+        */
+        con.query(`SELECT * FROM roles WHERE roles.role_name = '${constants.role.admin}'`, function (err, result)  // Executing the above query
         {
-            /**
-             * Searching whether the admin role is already available. If available then it will not enter
-             * the data ewxits from here
-             */
-            con.query(`SELECT * FROM roles WHERE roles.role_name = '${constants.role.admin}'`, function (err, result)  // Executing the above query
+            if(result.length != 0) // if the admin role is already present then this if block code
             {
-                if(result.length != 0) // if the admin role is already present then this if block code
-                {
-                    console.log(" #### Admin role is already available #### ");
-                }
-                else    
-                {
+                console.log(" #### Admin role is already available #### ");
+            }
+            else    
+            {
                 /**
                 * Searching whether the admin role is already available. If not available then it will enter
                 * the data from this lines of code
                 */
-                    new Promise((resolve, reject)=>
-                    {// the below query is for inserting the role table
-                        let insQuery = `INSERT INTO roles(role_name) VALUES ('${constants.role.admin}')`;
-                        con.query(insQuery, (err, result1)=> // Executing the above query
+                new Promise((resolve, reject)=>
+                {
+                    // the below query is for inserting the role table
+                    let insQuery = `INSERT INTO roles(role_name) VALUES ('${constants.role.admin}')`;
+                    con.query(insQuery, (err, result1)=> // Executing the above query
+                    {
+                        if(result1) // if inserion happend correctly then if block
                         {
-                            if(result1) // if inserion happend correctly then if block
-                            {
-                                console.log(' #### Admin role entered successfully #### ')
-                                resolve('true');
-                            }
-                            else // if error happend then else block
-                            {
-                                console.log(" #### Error while entereing the admin data #### ")
-                                reject(err);
-                            }
-                        });
+                            console.log(' #### Admin role entered successfully #### ')
+                            resolve('true');
+                        }
+                        else // if error happend then else block
+                        {
+                            console.log(" #### Error while entereing the admin data #### ")
+                            reject(err);
+                        }
                     });
-                }
-            });
+                });
+            }
+        });
 
         /**
         * Searching whether the admin user data is already available. If available then it will not enter

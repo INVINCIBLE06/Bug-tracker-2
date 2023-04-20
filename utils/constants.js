@@ -76,8 +76,9 @@ module.exports =
         number_of_incorrect_password_attempt : 5,
         user_blocked_for_days : 1,
         number_of_minutes_after_OTP_will_blocked : 3,
-        link_valid_till : 300,
+        link_valid_till : 18000,
         tickets_expiration_deadline_day : 2,
+        token_time : 36400,
     },
 
     event_scheduler_status :
@@ -89,6 +90,7 @@ module.exports =
     purpose :
     {
         Passwordreset : "Passwordreset",
-        emailVerfication : "emailVerfication"
+        emailVerfication : "emailVerfication",
+        authentication : "authentication"
     }
 };

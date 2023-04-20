@@ -11,8 +11,8 @@ exports.SendGeneratedOTPCode = (to, otp) =>
             host : "smtp.gmail.com",
             auth :
             {
-                user : 'sp832154@gmail.com', // replace with your email address
-                pass : 'ybpkooosqsbpboeu' // replace with your email password
+                user : process.env.adminemail, // replace with your email address
+                pass : process.env.password // replace with your email password
             },
             secure : true,
         });

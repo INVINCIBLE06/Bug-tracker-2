@@ -102,8 +102,18 @@ exports.signin = async (req, res) =>
                                                     { // if the procedured executed successfully then this if block code is executed
                                                         if(resultlgg.length != 0)
                                                         {
-                                                            const token = jwt.sign({id : result[0].User_Id, purpose: "authentication"}, authConfig.secret, {expiresIn : process.env.JWT_TIME}); // expiery time is 24 hours
+                                                            const token = jwt.sign
+                                                            ({
+                                                                id : result[0].User_Id,
+                                                                purpose: constants.purpose.authentication
+                                                            },
+                                                            authConfig.secret,
+                                                            {
+                                                                expiresIn : constants.day_or_minutes_protection_policy_numbers.token_time
+                                                            }); // expiery time is 24 hours
+                                                            
                                                             // console.log(token)
+                                                            
                                                             console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
                                                             console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
                                                             return res.status(200).send

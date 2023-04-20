@@ -34,21 +34,21 @@ exports.updateRolename = async(req, res, next)=>
     let roles = await role.updateOneRole(req.body.role_name, req.body.new_rolename);
     if(roles)
     {
-            return res.status(200).send
-            ({
-                success : true,
-                code : 200,
-                message : "Updated Successfully",
-            });
+        return res.status(200).send
+        ({
+            success : true,
+            code : 200,
+            message : "Updated Successfully",
+        });
     }
     else
     {
         return res.status(400).send
-            ({
-                success : false,
-                code : 400,
-                message : "Update request failed",
-            });
+        ({
+            success : false,
+            code : 400,
+            message : "Update request failed",
+        });
     }
 };
 
@@ -59,20 +59,20 @@ exports.deleteRole = async(req, res, next)=>
     if(roles)
     {
         return res.status(200).send
-            ({
-                success : true,
-                code : 200,
-                message : "Deleted Successfully",
-            });
+        ({
+            success : true,
+            code : 200,
+            message : "Deleted Successfully",
+        });
     }
     else
     {
         return res.status(400).send
-            ({
-                success : true,
-                code : 400,
-                message : "Failed",
-            });
+        ({
+            success : true,
+            code : 400,
+            message : "Failed",
+        });
     }
 };
 
@@ -84,20 +84,20 @@ exports.getallrole = async(req, res, next) =>
     if(roles)
     {
         return res.status(200).send
-            ({
-                success : true,
-                code : 200,
-                message : "Role data successfully fetched",
-                roles: roles
-            });
+        ({
+            success : true,
+            code : 200,
+            message : "Role data successfully fetched",
+            roles: roles
+        });
     }
     else
     {
         return res.status(400).send
-            ({
-                success : false,
-                code : 400,
-                message : "Error while fetching role data",
-            }); 
+        ({
+            success : false,
+            code : 400,
+            message : "Error while fetching role data",
+        }); 
     }
 };

@@ -30,11 +30,11 @@ exports.AddNewUser = async(req, res, next)=>
     else
     {   // if user added then below if code will be executed other wisee else part
         return res.status(400).send
-            ({
-                success : false,
-                code : 400,
-                message : "Signup failed ! Role is not available",
-            }) 
+        ({
+            success : false,
+            code : 400,
+            message : "Signup failed ! Role is not available",
+        }); 
     }
 };
 
@@ -107,15 +107,17 @@ exports.signin = async (req, res) =>
                                                             console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
                                                             console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
                                                             return res.status(200).send
-                                                            ({ // This message will be displayed 
+                                                            ({ 
+                                                                // This message will be displayed 
                                                                 success : true,
                                                                 code : 200,
                                                                 message : "Signin Successfully",
-                                                                date : {
-                                                                            users : result,
-                                                                            access : token, 
-                                                                            module : resultMID
-                                                                        }
+                                                                data :
+                                                                {
+                                                                    users : result,
+                                                                    // access : token, 
+                                                                    // module : resultMID
+                                                                }
                                                             });
                                                         }
                                                         else // if the procedured executed unsuccessfully then this else block code is executed

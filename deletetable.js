@@ -20,7 +20,7 @@ module.exports = async function()
         {
             if(error)
             {
-
+                return console.log("Error While making connection to the detabase at the time of delection")
             }
             else
             {

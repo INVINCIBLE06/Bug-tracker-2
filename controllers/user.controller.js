@@ -1,9 +1,10 @@
-const user = require('../models/user.model'); //importing the use module and assign it to user variable 
 const bcrypt = require('bcryptjs'); // importing the bcrypt js for hashing our password
+const jwt = require('jsonwebtoken');
+
+const authConfig = require('../configs/auth.config');
 const constants = require('../utils/constants');
-const fetch = require('../helper/commonfetchingfunction'); 
-
-
+const fetch = require('../helper/commonfetchingfunction');
+const user = require('../models/user.model'); //importing the use module and assign it to user variable 
 
 
 // The below function is for forgot password.
@@ -284,14 +285,45 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) =>
             code : 500,
             message : 'Internal server error',         
         });
-
     }
 };
-
-exports.ResetPasswordThroughLink = async (req, res) =>
+ 
+exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
 {
+    const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
+    if(users)
+    {
+        // Update the JWT token to set resetDone flag to true
+        // const newToken = jwt.sign
+        // ({
+        //     id: newTokenDetails.id,
+        //     timestamp: newTokenDetails.tokenCreatedAt,
+        //     resetDone: true,
+        // },
+        // authConfig.secret,
+        // {
+        //     expiresIn: '1h', // the token will now expire in 1 hour
+        // });
 
+        // console.log(newToken)
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : "Password updated"
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            success : false,
+            code : 400,
+            message : " Error while updating the password from reset link "
+        });
+    }
 }
+
 
 
 

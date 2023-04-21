@@ -18,7 +18,8 @@ exports.GenerateLink = (id) =>
         const token = jwt.sign
         ({
             id : id,
-            purpose : constants.purpose.Passwordreset 
+            purpose : constants.purpose.Passwordreset,
+            resetDone : false
         },
         authConfig.secret,
         {

@@ -506,6 +506,33 @@ module.exports = class user
         });
     };
 
+    static async resetpasswordthroughlink(id, password, confirm_password)
+    {
+        return new Promise (async (resolve, reject) =>
+        {
+            try 
+            {
+                let UpdateQuery = `UPDATE users u SET u.password ='${password}', u.confirm_password ='${confirm_password}' WHERE u.id = '${id}' `;
+                con.query(UpdateQuery, (err, result) =>
+                {
+                    if(result.length != 0)  // If update query is successfully executed then if block code is executed
+                    { 
+                        resolve('true'); // result sent back to the controller. From where it is called
+                    }
+                    else // If update query is not successfully executed then else block code is executed
+                    {
+                        reject(err); // error will send back to the controller. From where it is called 
+                    }
+                }); 
+            }
+            catch(error)
+            {
+                reject(err);                                
+            }
+        });
+    };
+
+
 
 
 };

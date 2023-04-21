@@ -76,11 +76,11 @@ module.exports =
         number_of_incorrect_password_attempt : 5,
         user_blocked_for_days : 1,
         number_of_minutes_after_OTP_will_blocked : 3,
-        link_valid_till : 18000,
+        link_valid_till : 300, // 5 minutes are converted into seconds
         tickets_expiration_deadline_day : 2,
-        token_time : 36400,
+        token_time : 86400, // 24 hours converted into seconds
     },
-
+ 
     event_scheduler_status :
     {
         on : "ON",

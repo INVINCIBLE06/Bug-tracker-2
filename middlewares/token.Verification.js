@@ -9,9 +9,8 @@ const time = require('../models/ticket.model');
 
 exports.resetPassword = async (req, res, next) => 
 {
-    const token = await req.params.token;
-    // console.log(token);
-    
+    let token = await req.params.token;
+    // console.log(token);    
     try
     {
         jwt.verify(token, authConfig.secret, async (err, decoded) =>
@@ -84,9 +83,7 @@ exports.resetPassword = async (req, res, next) =>
                             tokenCreatedAt : tokenCreatedAt,
                             id : userDetail[0].id
                         }
-
                         next(newTokenDetails);
-
                     }
                 }     
             }

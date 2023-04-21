@@ -431,7 +431,8 @@ module.exports = class user
         {
             try
             {
-                var link = linkOrOtp.GenerateLink(id);
+                var token = linkOrOtp.token(id);
+                var link = linkOrOtp.CreateLink(token);
                 // console.log(`The Link is ${link}`);
                 resolve(link);      
             } 

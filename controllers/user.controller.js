@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs'); // importing the bcrypt js for hashing our password
 const jwt = require('jsonwebtoken');
 
+const linkOrOtp = require('../utils/generatecodeorlink');
 const authConfig = require('../configs/auth.config');
 const constants = require('../utils/constants');
 const fetch = require('../helper/commonfetchingfunction');
@@ -235,16 +236,16 @@ exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
     let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
     // console.log(userDetails[0].email)
-    let users = await user.sendLink(userDetails[0].email, userDetails[0].id);
+    let link = await user.sendLink(userDetails[0].email, userDetails[0].id);
     // console.log(users)
-    if(users)
+    if(link)
     {
         res.send
         ({
             code : 200,
             success : true,
-            message : "Link genrated",
-            Link : users
+            message : "Link generated",
+            Link : link
         });
     }
     else
@@ -287,31 +288,21 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) =>
         });
     }
 };
- 
+
+var i = 0
 exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
 {
+    // console.log(i)
     const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
     if(users)
-    {
-        // Update the JWT token to set resetDone flag to true
-        // const newToken = jwt.sign
-        // ({
-        //     id: newTokenDetails.id,
-        //     timestamp: newTokenDetails.tokenCreatedAt,
-        //     resetDone: true,
-        // },
-        // authConfig.secret,
-        // {
-        //     expiresIn: '1h', // the token will now expire in 1 hour
-        // });
-
-        // console.log(newToken)
+    {      
         res.send
         ({
             success : true,
             code : 200,
             message : "Password updated"
         });
+        
     }
     else
     {

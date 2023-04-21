@@ -10,7 +10,7 @@ exports.GenerateSixDigitOTPcode = () =>
     return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP    
 }
 
-exports.GenerateLink = (id) => 
+exports.token = (id) => 
 {
     try 
     {
@@ -25,13 +25,17 @@ exports.GenerateLink = (id) =>
         {
             expiresIn : constants.day_or_minutes_protection_policy_numbers.link_valid_till
         });
-        
-        let link = `${process.env.APP_URL}/bugtracker/${constants.purpose.Passwordreset}/${token}` ;
-        return link;
+        return token;       
     }
     catch(err)
     {
         console.error('Error generating JWT token:', err);
         return null; // or throw an error as appropriate for your use case
     }
+}
+
+exports.CreateLink = (token) =>
+{
+    let link = `${process.env.APP_URL}/bugtracker/${constants.purpose.Passwordreset}/${token}` ;
+    return link;
 }

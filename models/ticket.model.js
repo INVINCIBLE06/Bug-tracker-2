@@ -716,21 +716,19 @@ const minutesAdd = (plus) =>
     return new Date(now.getTime() + plus * 60000);
 }
 
-const nowd = () =>
-{
-    var date_ob = new Date();
-    var day = ("0" + date_ob.getDate()).slice(-2);
-    var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-    var year = date_ob.getFullYear();   
-    var date = year + "-" + month + "-" + day;
-    // console.log(date);    
-    var hours = date_ob.getHours();
-    var minutes = date_ob.getMinutes();
-    var seconds = date_ob.getSeconds();  
-    var dateTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-    // console.log(dateTime);
+const nowd = () => {
+    const date_ob = new Date();
+    const day = ("0" + date_ob.getDate()).slice(-2);
+    const month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    const year = date_ob.getFullYear();
+    const date = year + "-" + month + "-" + day;
+    const hours = date_ob.getHours();
+    const minutes = ("0" + date_ob.getMinutes()).slice(-2); // Pad minutes with leading zero
+    const seconds = ("0" + date_ob.getSeconds()).slice(-2); // Pad seconds with leading zero
+    const dateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     return dateTime;
 };
+
 
 
 const convertDatePickerTimeToMySQLTime = (str) =>
@@ -745,6 +743,12 @@ const convertDatePickerTimeToMySQLTime = (str) =>
     var mySQLDate = [date.getFullYear(), month, day].join("-");
     var mySQLTime = [hours, minutes, seconds].join(":");
     return [mySQLDate, mySQLTime].join(" ");
+};
+
+const convertUnixTimeIntoSimpleFormat = (value) =>
+{
+    const expDate = convertDatePickerTimeToMySQLTime(new Date(value * 1000).toLocaleString());
+    return expDate;
 }
 
 
@@ -753,7 +757,8 @@ const timeexportfunction =
     DAYADD,
     nowd,
     convertDatePickerTimeToMySQLTime,
-    minutesAdd
+    minutesAdd,
+    convertUnixTimeIntoSimpleFormat
 }
 
 module.exports = timeexportfunction;

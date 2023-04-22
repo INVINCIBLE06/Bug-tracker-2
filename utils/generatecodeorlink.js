@@ -10,7 +10,7 @@ exports.GenerateSixDigitOTPcode = () =>
     return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP    
 }
 
-exports.token = (id) => 
+exports.token = (password,  id) => 
 {
     try 
     {
@@ -19,7 +19,7 @@ exports.token = (id) =>
         ({
             id : id,
             purpose : constants.purpose.Passwordreset,
-            resetDone : false
+            password  : password,
         },
         authConfig.secret,
         {
@@ -39,3 +39,4 @@ exports.CreateLink = (token) =>
     let link = `${process.env.APP_URL}/bugtracker/${constants.purpose.Passwordreset}/${token}` ;
     return link;
 }
+

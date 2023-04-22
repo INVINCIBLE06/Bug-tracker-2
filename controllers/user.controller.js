@@ -235,8 +235,9 @@ exports.UpdateUserStatus = async (req, res) =>
 exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
     let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
-    // console.log(userDetails[0].email)
-    let link = await user.sendLink(userDetails[0].email, userDetails[0].id);
+    // console.log(userDetails[0].password)
+    // console.log(userDetails[0].confirm_password)
+    let link = await user.sendLink(userDetails[0].password, userDetails[0].id);
     // console.log(users)
     if(link)
     {
@@ -289,10 +290,8 @@ exports.sendOTPcodeToEmailForVerification = async (req, res, next) =>
     }
 };
 
-var i = 0
 exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
 {
-    // console.log(i)
     const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
     if(users)
     {      

@@ -37,7 +37,7 @@ module.exports = function(app)
 
     app.post('/validate/otp/:id', verifyparams.UserIdIsCorrectInParams , usercontroller.CheckOTP);
 
-    app.get(`/bugtracker/${constants.purpose.Passwordreset}/:token`, tokenVerification.resetPassword, usercontroller.ResetPasswordThroughLink);
+    app.get(`/bugtracker/${constants.purpose.Passwordreset}/:token`, passwordvalidation, tokenVerification.resetPassword, usercontroller.ResetPasswordThroughLink);  
 
 
 };

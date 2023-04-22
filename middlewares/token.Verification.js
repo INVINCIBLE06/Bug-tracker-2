@@ -20,7 +20,7 @@ exports.resetPassword = async (req, res, next) =>
                 console.log('Error', err.message)
                 return res.status(401).send
                 ({
-                    message : "The link is not valid!. Please check once again."
+                    message : "The link is not valid !. Please check once again."
                 });
             }
             
@@ -32,31 +32,34 @@ exports.resetPassword = async (req, res, next) =>
                 });
             }
 
-            else if(decoded.resetDone == true)
-            {
-                console.log(`This link is already used for reseting the password. Please make a request again`)
-                return res.status(401).send
-                ({
-                    message : "This link is already used for reseting the password. Please make a request again"
-                });
-            }
-
             let userDetail = await fetch.getUserDetailsByIdCondition(decoded.id);
             // console.log(userDetail);
 
             if(userDetail)
             {   
                 // if user exists
-                if(userDetail[0].email_verified == constants.status.verified)
+                // if(userDetail[0].email_verified == constants.status.notverified)
+                // {
+                //     //if user is already verified
+                //     return res.status(401).send
+                //     ({
+                //         code : 401,
+                //         success : false,
+                //         message : "The user is not verified"
+                //     });
+                // }
+
+                if(userDetail[0].password != decoded.password) 
                 {
-                    //if user is already verified
+                    // console.log("Password is changed. You cannot use the link again");
                     return res.status(401).send
                     ({
                         code : 401,
                         success : false,
-                         message : "The user is not verified"
+                        message : "Password is changed. You cannot use the link again"
                     });
                 }
+
                 else
                 {
                     const tokenCreatedAt = time.convertUnixTimeIntoSimpleFormat(decoded.iat) ;  //time converted to miliseconds
@@ -79,7 +82,8 @@ exports.resetPassword = async (req, res, next) =>
                     }
                     else
                     {
-                        const newTokenDetails = {
+                        const newTokenDetails = 
+                        {
                             tokenCreatedAt : tokenCreatedAt,
                             id : userDetail[0].id
                         }

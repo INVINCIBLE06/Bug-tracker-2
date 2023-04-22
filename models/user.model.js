@@ -425,13 +425,13 @@ module.exports = class user
         });        
     };
 
-    static sendLink(email, id)
+    static sendLink(password, id)
     {
         return new Promise(async (resolve, reject) =>
         {
             try
             {
-                var token = linkOrOtp.token(id);
+                var token = linkOrOtp.token(password, id);
                 var link = linkOrOtp.CreateLink(token);
                 // console.log(`The Link is ${link}`);
                 resolve(link);      
@@ -507,7 +507,7 @@ module.exports = class user
         });
     };
 
-    static async resetpasswordthroughlink(id, password, confirm_password)
+    static async resetpasswordthroughlink(id, password, confirm_password) 
     {
         return new Promise (async (resolve, reject) =>
         {

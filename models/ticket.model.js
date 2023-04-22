@@ -756,8 +756,8 @@ const timeexportfunction =
 {
     DAYADD,
     nowd,
-    convertDatePickerTimeToMySQLTime,
     minutesAdd,
+    convertDatePickerTimeToMySQLTime,
     convertUnixTimeIntoSimpleFormat
 }
 

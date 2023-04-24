@@ -385,64 +385,6 @@ module.exports = class user
         });
     };
 
-    static async sendOTPcodetoemailforverification(id, email)
-    {
-        return new Promise(async (resolve, reject)=>
-        {
-            try 
-            {
-                var OTP = linkOrOtp.GenerateSixDigitOTPcode();
-                console.log(`The OTP is ${OTP}`);
-                let result = await sendEmail.SendGeneratedOTPCode(email, OTP);
-                if(result)
-                {
-                    // console.log('Email sent successfully'); // You can return a response or perform any other action here
-                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync((OTP.toString()), 8)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}' )`;
-                    con.query(InsQuery, (err, result) =>
-                    {
-                        if(result.length != 0)
-                        { 
-                            // console.log('OTP stored successfully'); // You can return a response or perform any other action here
-                            resolve(true)                            
-                        }
-                        else
-                        {
-                            console.log('OTP not stored', err.message); // You can return a response or perform any other action here
-                            reject(err)
-                        }
-                    });
-                }
-                else
-                {
-                    console.log('Email not sent'); // You can return a response or perform any other action here
-                    reject(err)
-                }        
-            } 
-            catch(error)
-            {
-                console.error('Error sending email:', error); // You can handle the error and return an appropriate response or perform any other action here
-            }            
-        });        
-    };
-
-    static sendLink(password, id)
-    {
-        return new Promise(async (resolve, reject) =>
-        {
-            try
-            {
-                var token = linkOrOtp.token(password, id);
-                var link = linkOrOtp.CreateLink(token);
-                // console.log(`The Link is ${link}`);
-                resolve(link);      
-            } 
-            catch(error)
-            {
-                resolve(error);
-            }            
-        });
-    };
-
     static async checkOTP(id, OTP)
     {
         return new Promise (async (resolve, reject) =>
@@ -507,6 +449,70 @@ module.exports = class user
         });
     };
 
+    static async sendOTPcodetoemail(id, email)
+    {
+        return new Promise(async (resolve, reject)=>
+        {
+            try 
+            {
+                var OTP = linkOrOtp.GenerateSixDigitOTPcode();
+                console.log(`The OTP is ${OTP}`);
+                let result = await sendEmail.SendGeneratedOTPCode(email, OTP);
+                if(result)
+                {
+                    // console.log('Email sent successfully'); // You can return a response or perform any other action here
+                    let InsQuery = `INSERT INTO otpstores(user_id, otp, expired_at) VALUES ('${id}', '${bcrypt.hashSync((OTP.toString()), 8)}', '${time.convertDatePickerTimeToMySQLTime(time.minutesAdd(constants.day_or_minutes_protection_policy_numbers.number_of_minutes_after_OTP_will_blocked))}' )`;
+                    con.query(InsQuery, (err, result) =>
+                    {
+                        if(result.length != 0)
+                        { 
+                            // console.log('OTP stored successfully'); // You can return a response or perform any other action here
+                            resolve(true)                            
+                        }
+                        else
+                        {
+                            console.log('OTP not stored', err.message); // You can return a response or perform any other action here
+                            reject(err)
+                        }
+                    });
+                }
+                else
+                {
+                    console.log('Email not sent'); // You can return a response or perform any other action here
+                    reject(err)
+                }        
+            } 
+            catch(error)
+            {
+                console.error('Error sending email:', error); // You can handle the error and return an appropriate response or perform any other action here
+            }            
+        });        
+    };
+
+
+// ------------------------------------------------------------------------------------------------------------------------------- // 
+    
+
+    static sendresetlinkforchangingthepassword(password, id)
+    {
+        return new Promise(async (resolve, reject) =>
+        {
+            try
+            {
+                var token = linkOrOtp.token(password, id, constants.purpose.Passwordreset);
+                var link = linkOrOtp.CreateLink(constants.purpose.Passwordreset,token);
+                // console.log(`The Link is ${link}`);
+                resolve(link);      
+            } 
+            catch(error)
+            {
+                resolve(error);
+            }            
+        });
+    };
+
+    
+
     static async resetpasswordthroughlink(id, password, confirm_password) 
     {
         return new Promise (async (resolve, reject) =>
@@ -529,6 +535,24 @@ module.exports = class user
             catch(error)
             {
                 reject(err);                                
+            }
+        });
+    };
+
+    static async sendlinkforemailverfication()
+    {
+        return new Promise (async (resolve, reject) =>
+        {
+            try
+            {
+                var token = linkOrOtp.token(id, constants.purpose.emailVerfication);
+                var link = linkOrOtp.CreateLink(constants.purpose.emailVerfication, token);
+                // console.log(`The Link is ${link}`);
+                resolve(link);                
+            } 
+            catch(error)
+            {
+                resolve(error);
             }
         });
     };

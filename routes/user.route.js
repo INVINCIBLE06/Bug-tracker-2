@@ -29,15 +29,18 @@ module.exports = function(app)
     app.put('/update/user/status/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.UpdateUserStatus);
     // through this below route we will be having the information for all the user. Only the Id which is submiited in the pamras. That users information will not be fetched
     app.get('/get/all/user/not/logged/one/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.GetAllUserWithOutTheLoggedOne);
+    // This below route will be used for checking the checking the otp. Which is send to the user
+    app.post('/validate/otp/:id', verifyparams.UserIdIsCorrectInParams , usercontroller.CheckOTP);
+    // this below route will be used for sending OTP to the user email
+    app.post(`/user/send/otp`, emailvalidation, usercontroller.SendOTPCodeToEmail);
+    // This route will send the reset password link to the user.
+    app.get('/get/reset/password/link/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.SendResetLinkForChangingThePassword);
+    // This below route will be useful to update or reset the password. The link that will be send to the user it will cheked by the below route
+    app.get(`/bugtracker/${constants.purpose.Passwordreset}/:token`, passwordvalidation, tokenVerification.resetPassword, usercontroller.ResetPasswordThroughLink);
+    
 /* ___________________________________________________________________________________________________________________________________________ */
 
-    app.get('/get/reset/password/link/:id', verifyparams.UserIdIsCorrectInParams, usercontroller.SendResetLinkForChangingThePassword);
 
-    app.post(`/user/send/otp`, emailvalidation, usercontroller.sendOTPcodeToEmailForVerification);
-
-    app.post('/validate/otp/:id', verifyparams.UserIdIsCorrectInParams , usercontroller.CheckOTP);
-
-    app.get(`/bugtracker/${constants.purpose.Passwordreset}/:token`, passwordvalidation, tokenVerification.resetPassword, usercontroller.ResetPasswordThroughLink);  
 
 
 };

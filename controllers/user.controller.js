@@ -197,6 +197,7 @@ exports.GetAllActiveEngineer = async (req, res) =>
 // There are two tyrpe of users one is active and another one is inactive. this function will be used to change them to opposite status
 // suppse it the status is inactive then it will changed to active. 
 // or if the status is active then it will changed to inactive it wll done on the basis of userid in the params
+
 exports.UpdateUserStatus = async (req, res) =>
 {
     let users = await user.updateuserstatus(req.params.id);
@@ -231,90 +232,6 @@ exports.UpdateUserStatus = async (req, res) =>
         });
     }
 };
-
-exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
-{
-    let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
-    // console.log(userDetails[0].password)
-    // console.log(userDetails[0].confirm_password)
-    let link = await user.sendLink(userDetails[0].password, userDetails[0].id);
-    // console.log(users)
-    if(link)
-    {
-        res.send
-        ({
-            code : 200,
-            success : true,
-            message : "Link generated",
-            Link : link
-        });
-    }
-    else
-    {
-        res.send
-        ({
-            code : 500,
-            success : false,
-            message : "Internal Server Error",
-        });
-    }
-
-}
-
-/**
- * Below function. I am writing is for email validation at the time registration it will be checked by sending a
- * OTP or verification link.  
- */
-exports.sendOTPcodeToEmailForVerification = async (req, res, next) => 
-{
-    let user_details = await fetch.getUserDetailsByEmailCondition(req.body.email);
-    let users = await user.sendOTPcodetoemailforverification(user_details[0].id, user_details[0].email);
-    // console.log(users)
-    if(users)
-    {
-        res.send
-        ({
-            success : true,
-            code : 200,
-            message : 'OTP sent successfully',
-        });
-    }
-    else
-    {
-        res.send
-        ({
-            success : false,
-            code : 500,
-            message : 'Internal server error',         
-        });
-    }
-};
-
-exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
-{
-    const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
-    if(users)
-    {      
-        res.send
-        ({
-            success : true,
-            code : 200,
-            message : "Password updated"
-        });
-        
-    }
-    else
-    {
-        res.send
-        ({
-            success : false,
-            code : 400,
-            message : " Error while updating the password from reset link "
-        });
-    }
-}
-
-
 
 
 exports.CheckOTP = async (req , res) =>
@@ -383,3 +300,97 @@ exports.CheckOTP = async (req , res) =>
         }
     }
 };
+
+exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
+{
+    let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
+    // console.log(userDetails[0].password)
+    // console.log(userDetails[0].confirm_password)
+    let link = await user.sendresetlinkforchangingthepassword(userDetails[0].password, userDetails[0].id);
+    // console.log(users)
+    if(link)
+    {
+        res.send
+        ({
+            code : 200,
+            success : true,
+            message : "Link generated",
+            Link : link
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            code : 500,
+            success : false,
+            message : "Internal Server Error",
+        });
+    }
+};
+
+/**
+ * Below function. I am writing is for email validation at the time registration it will be checked by sending a
+ * OTP or verification link.  
+ */
+
+exports.SendOTPCodeToEmail = async (req, res, next) => 
+{
+    let user_details = await fetch.getUserDetailsByEmailCondition(req.body.email);
+    let users = await user.sendOTPcodetoemail(user_details[0].id, user_details[0].email);
+    // console.log(users)
+    if(users)
+    {
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : 'OTP sent successfully',
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            success : false,
+            code : 500,
+            message : 'Internal server error',         
+        });
+    }
+};
+
+exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
+{
+    const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
+    if(users)
+    {      
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : "Password updated"
+        });
+        
+    }
+    else
+    {
+        res.send
+        ({
+            success : false,
+            code : 400,
+            message : " Error while updating the password from reset link "
+        });
+    }
+};
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+exports.SendLinkForEmailVerfication = async (req, res) =>
+{
+
+};
+
+
+
+
+

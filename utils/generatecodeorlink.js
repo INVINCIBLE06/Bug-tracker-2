@@ -10,7 +10,7 @@ exports.GenerateSixDigitOTPcode = () =>
     return Math.floor(100000 + Math.random() * 900000); // generates a 6-digit OTP    
 }
 
-exports.token = (password,  id) => 
+exports.token = (unique, id, purpose) => 
 {
     try 
     {
@@ -18,8 +18,8 @@ exports.token = (password,  id) =>
         const token = jwt.sign
         ({
             id : id,
-            purpose : constants.purpose.Passwordreset,
-            password  : password,
+            purpose : purpose,
+            unique  : unique,
         },
         authConfig.secret,
         {
@@ -34,9 +34,9 @@ exports.token = (password,  id) =>
     }
 }
 
-exports.CreateLink = (token) =>
+exports.CreateLink = (purpose, token) =>
 {
-    let link = `${process.env.APP_URL}/bugtracker/${constants.purpose.Passwordreset}/${token}` ;
+    let link = `${process.env.APP_URL}/bugtracker/${purpose}/${token}` ;
     return link;
 }
 

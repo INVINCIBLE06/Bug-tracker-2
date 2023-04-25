@@ -74,7 +74,7 @@ module.exports = class fetching
         });
     };
 
-    static sendlinktouser(id)
+    static getUserDetailsByIdCondition(id)
     {
         return new Promise((resolve, reject) =>
         {

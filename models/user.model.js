@@ -4,6 +4,7 @@ const time = require('../models/ticket.model');
 const linkOrOtp = require('../utils/generatecodeorlink');
 const sendEmail = require('../utils/sendEmail');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
+const { resolve } = require('path');
 
 module.exports = class user
 {
@@ -539,13 +540,13 @@ module.exports = class user
         });
     };
 
-    static async sendlinkforemailverfication()
+    static async sendlinkforemailverfication(verification, id)
     {
         return new Promise (async (resolve, reject) =>
         {
             try
             {
-                var token = linkOrOtp.token(id, constants.purpose.emailVerfication);
+                var token = linkOrOtp.token(verification, id, constants.purpose.emailVerfication);
                 var link = linkOrOtp.CreateLink(constants.purpose.emailVerfication, token);
                 // console.log(`The Link is ${link}`);
                 resolve(link);                
@@ -557,7 +558,32 @@ module.exports = class user
         });
     };
 
-
+    static async verifyemailthroughlink()
+    {
+        return new Promise(async (resolve, reject) =>
+        {
+            try
+            {
+                let UpdateQuery = `UPDATE users u SET u.email_verified = '${constants.status.verified}', WHERE u.id = '${id}' `;
+                con.query(UpdateQuery, (err, result) =>
+                {
+                    // console.log(result)
+                    if(result.length != 0)  // If update query is successfully executed then if block code is executed
+                    { 
+                        resolve(true); // result sent back to the controller. From where it is called
+                    }
+                    else // If update query is not successfully executed then else block code is executed
+                    {
+                        reject(err); // error will send back to the controller. From where it is called 
+                    }
+                });
+            }
+            catch(error)
+            {
+                resolve(error);
+            }
+        });
+    };
 
 
 };

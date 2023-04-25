@@ -359,9 +359,9 @@ exports.SendOTPCodeToEmail = async (req, res, next) =>
     }
 };
 
-exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
+exports.ResetPasswordThroughLink = async (userDetail, req, res, next ) =>
 {
-    const users = await user.resetpasswordthroughlink(newTokenDetails.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
+    const users = await user.resetpasswordthroughlink(userDetail.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
     if(users)
     {      
         res.send
@@ -369,8 +369,7 @@ exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
             success : true,
             code : 200,
             message : "Password updated"
-        });
-        
+        });        
     }
     else
     {
@@ -387,8 +386,65 @@ exports.ResetPasswordThroughLink = async (newTokenDetails, req, res, next ) =>
 
 exports.SendLinkForEmailVerfication = async (req, res) =>
 {
-
+    let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
+    if(userDetails[0].email_verified == constants.status.verified)
+    {
+        res.send
+        ({
+            code : 404,
+            success : false,
+            message : "This user is already verified. So the link cannot be generated.",
+        }); 
+    }
+    else
+    {
+        let link = await user.sendlinkforemailverfication(userDetails[0].email_verified, userDetails[0].id)
+        if(link)
+        {
+            res.send
+            ({
+                code : 200,
+                success : true,
+                message : "Link generated",
+                Link : link
+            });        
+        }
+        else
+        {
+            res.send
+            ({
+                code : 500,
+                success : false,
+                message : "Internal Server Error",
+            });
+        }
+    }
 };
+
+exports.VerifyEmailThroughLink = async (userDetail , req , res ) =>
+{
+    console.log('Here',userDetail[0].id);
+    const email_verify = await user.verifyemailthroughlink(userDetail.id);
+    // console.log(email_verify)
+    if(email_verify)
+    {
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : "Email Verified"
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            success : false,
+            code : 400,
+            message : " Error while verifying the email from link "
+        });
+    }
+}
 
 
 

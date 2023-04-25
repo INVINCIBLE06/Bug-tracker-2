@@ -86,12 +86,7 @@ exports.resetPassword = async (req, res, next) =>
                     }
                     else
                     {
-                        const newTokenDetails = 
-                        {
-                            tokenCreatedAt : tokenCreatedAt,
-                            id : userDetail[0].id
-                        }
-                        next(newTokenDetails);
+                        next(userDetail[0]);
                     }
                 }     
             }
@@ -132,11 +127,11 @@ exports.emailVerification = async (req, res, next) =>
                 });
             }
             
-            else if(decoded.purpose != constants.purpose.Passwordreset)
+            else if(decoded.purpose != constants.purpose.emailVerfication)
             {
                 return res.status(401).send
                 ({
-                    message : "The Token passed is not for resetting password"
+                    message : "The link passed is not for email verification. Please check again"
                 });
             }
 
@@ -145,26 +140,15 @@ exports.emailVerification = async (req, res, next) =>
 
             if(userDetail)
             {   
-                // if user exists
-                // if(userDetail[0].email_verified == constants.status.notverified)
-                // {
-                //     //if user is already verified
-                //     return res.status(401).send
-                //     ({
-                //         code : 401,
-                //         success : false,
-                //         message : "The user is not verified"
-                //     });
-                // }
-
-                if(userDetail[0].password != decoded.password) 
+            
+                if(userDetail[0].email_verified == constants.status.verified) 
                 {
                     // console.log("Password is changed. You cannot use the link again");
                     return res.status(401).send
                     ({
                         code : 401,
                         success : false,
-                        message : "Password is changed. You cannot use the link again"
+                        message : "Link is already used. User is verifed as well."
                     });
                 }
 
@@ -190,12 +174,8 @@ exports.emailVerification = async (req, res, next) =>
                     }
                     else
                     {
-                        const newTokenDetails = 
-                        {
-                            tokenCreatedAt : tokenCreatedAt,
-                            id : userDetail[0].id
-                        }
-                        next(newTokenDetails);
+                        // console.log(userDetail[0])
+                        next(userDetail);
                     }
                 }     
             }

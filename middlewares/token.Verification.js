@@ -15,7 +15,7 @@ exports.resetPassword = async (req, res, next) =>
 {
     let token = await req.params.token;
     // console.log(token);    
-    try
+    try 
     {
         jwt.verify(token, authConfig.secret, async (err, decoded) =>
         {
@@ -52,8 +52,8 @@ exports.resetPassword = async (req, res, next) =>
                 //         message : "The user is not verified"
                 //     });
                 // }
-
-                if(userDetail[0].password != decoded.password) 
+                
+                if(userDetail[0].password != decoded.unique) 
                 {
                     // console.log("Password is changed. You cannot use the link again");
                     return res.status(401).send
@@ -86,7 +86,11 @@ exports.resetPassword = async (req, res, next) =>
                     }
                     else
                     {
-                        next(userDetail[0]);
+                        const newTokenDetails = {
+                            tokenCreatedAt : tokenCreatedAt,
+                            id : userDetail[0].id
+                        }
+                        next(newTokenDetails);
                     }
                 }     
             }
@@ -110,6 +114,11 @@ exports.resetPassword = async (req, res, next) =>
 };
 
 
+
+
+/// ====================================================================================================================
+
+
 exports.emailVerification = async (req, res, next) => 
 {
     let token = await req.params.token;
@@ -120,14 +129,14 @@ exports.emailVerification = async (req, res, next) =>
         {
             if(err)
             {
-                console.log('Error', err.message)
+                console.log('Error', err.message);
                 return res.status(401).send
                 ({
                     message : "The link is not valid !. Please check once again."
                 });
             }
             
-            else if(decoded.purpose != constants.purpose.emailVerfication)
+            if(decoded.purpose != constants.purpose.emailVerfication)
             {
                 return res.status(401).send
                 ({
@@ -139,11 +148,10 @@ exports.emailVerification = async (req, res, next) =>
             // console.log(userDetail);
 
             if(userDetail)
-            {   
-            
+            {             
                 if(userDetail[0].email_verified == constants.status.verified) 
                 {
-                    // console.log("Password is changed. You cannot use the link again");
+                    // console.log("Link is already used. User is verifed as well.");
                     return res.status(401).send
                     ({
                         code : 401,
@@ -151,7 +159,6 @@ exports.emailVerification = async (req, res, next) =>
                         message : "Link is already used. User is verifed as well."
                     });
                 }
-
                 else
                 {
                     const tokenCreatedAt = time.convertUnixTimeIntoSimpleFormat(decoded.iat) ;  //time converted to miliseconds
@@ -174,8 +181,11 @@ exports.emailVerification = async (req, res, next) =>
                     }
                     else
                     {
-                        // console.log(userDetail[0])
-                        next(userDetail);
+                        const newTokenDetails = {
+                            id: userDetail[0].id
+                        }
+                        next(newTokenDetails);
+                        
                     }
                 }     
             }

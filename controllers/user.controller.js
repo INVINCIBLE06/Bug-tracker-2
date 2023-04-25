@@ -232,7 +232,32 @@ exports.UpdateUserStatus = async (req, res) =>
         });
     }
 };
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+exports.SendOTPCodeToEmail = async (req, res, next) => 
+{
+    let user_details = await fetch.getUserDetailsByEmailCondition(req.body.email);
+    let users = await user.sendOTPcodetoemail(user_details[0].id, user_details[0].email);
+    // console.log(users)
+    if(users)
+    {
+        res.send
+        ({
+            success : true,
+            code : 200,
+            message : 'OTP sent successfully',
+        });
+    }
+    else
+    {
+        res.send
+        ({
+            success : false,
+            code : 500,
+            message : 'Internal server error',         
+        });
+    }
+};
 
 exports.CheckOTP = async (req , res) =>
 {
@@ -300,6 +325,8 @@ exports.CheckOTP = async (req , res) =>
         }
     }
 };
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
@@ -333,31 +360,6 @@ exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
  * Below function. I am writing is for email validation at the time registration it will be checked by sending a
  * OTP or verification link.  
  */
-
-exports.SendOTPCodeToEmail = async (req, res, next) => 
-{
-    let user_details = await fetch.getUserDetailsByEmailCondition(req.body.email);
-    let users = await user.sendOTPcodetoemail(user_details[0].id, user_details[0].email);
-    // console.log(users)
-    if(users)
-    {
-        res.send
-        ({
-            success : true,
-            code : 200,
-            message : 'OTP sent successfully',
-        });
-    }
-    else
-    {
-        res.send
-        ({
-            success : false,
-            code : 500,
-            message : 'Internal server error',         
-        });
-    }
-};
 
 exports.ResetPasswordThroughLink = async (userDetail, req, res, next ) =>
 {
@@ -421,9 +423,9 @@ exports.SendLinkForEmailVerfication = async (req, res) =>
     }
 };
 
-exports.VerifyEmailThroughLink = async (userDetail , req , res ) =>
+exports.VerifyEmailThroughLink = async (newTokenDetails , req , res ) =>
 {
-    console.log('Here',userDetail[0].id);
+    console.log('Here',newTokenDetails.id);
     const email_verify = await user.verifyemailthroughlink(userDetail.id);
     // console.log(email_verify)
     if(email_verify)

@@ -558,7 +558,7 @@ module.exports = class user
         });
     };
 
-    static async verifyemailthroughlink()
+    static async verifyemailthroughlink(id)
     {
         return new Promise(async (resolve, reject) =>
         {

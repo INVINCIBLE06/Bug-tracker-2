@@ -19,7 +19,7 @@ exports.token = (unique, id, purpose) =>
         ({
             id : id,
             purpose : purpose,
-            unique  : unique,
+            unique : unique,
         },
         authConfig.secret,
         {

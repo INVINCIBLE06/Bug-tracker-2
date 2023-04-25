@@ -40,7 +40,8 @@ module.exports = function(app)
     
 /* ___________________________________________________________________________________________________________________________________________ */
 
+   app.get(`/bugtracker/verfication/link/:id`, verifyparams.UserIdIsCorrectInParams, usercontroller.SendLinkForEmailVerfication);
 
-
+   app.get(`/bugtracker/${constants.purpose.emailVerfication}/:token`, tokenVerification.emailVerification, usercontroller.VerifyEmailThroughLink);
 
 };

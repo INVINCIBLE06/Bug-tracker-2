@@ -1,5 +1,5 @@
 /**
- * the Unix timestamp used in JSON Web Tokens (JWT) is calculated by counting the number
+ * The Unix timestamp used in JSON Web Tokens (JWT) is calculated by counting the number
  * of seconds that have passed or gone since January 1, 1970, at 00:00:00 UTC. This is also known as the Unix epoch.
  */
 

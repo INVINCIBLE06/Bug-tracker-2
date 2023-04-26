@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-exports.SendGeneratedOTPCode = (to, otp) =>
+exports.SendGeneratedValue = (to, value, purpose) =>
 {
     return new Promise((resolve, reject) =>
     {
@@ -17,26 +17,55 @@ exports.SendGeneratedOTPCode = (to, otp) =>
             secure : true,
         });
 
-        const mailOptions = 
+
+        if(value.length == 6)
         {
-            from : process.env.adminemail, // replace with your email address
-            to : to, // recipient's email address
-            subject : 'Email Verification',
-            text : `Your OTP or Link for email verification is: ${otp}`
-        };
-        
-        transporter.sendMail(mailOptions, (error, info) => 
+            const mailOptions = 
+            {
+                from : process.env.adminemail, // replace with your email address
+                to : to, // recipient's email address
+                subject : 'Verification',
+                text : `Your OTP for ${purpose} is: ${value}`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => 
+            {
+                if(error)
+                {
+                    // console.error('Error sending email:', error);
+                    reject(error); // Reject the promise with the error
+                }
+                else
+                {
+                    // console.log('Email sent:', info.response);
+                    resolve(info.response); // Resolve the promise with the email response
+                }
+            });
+            
+        }
+        else
         {
-            if(error)
+            const mailOptions = 
             {
-                // console.error('Error sending email:', error);
-                reject(error); // Reject the promise with the error
-            }
-            else
+                from : process.env.adminemail, // replace with your email address
+                to : to, // recipient's email address
+                subject : 'Verification',
+                text : `Your Link for ${purpose} is: ${value}`
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => 
             {
-                // console.log('Email sent:', info.response);
-                resolve(info.response); // Resolve the promise with the email response
-            }
-        });
+                if(error)
+                {
+                    // console.error('Error sending email:', error);
+                    reject(error); // Reject the promise with the error
+                }
+                else
+                {
+                    // console.log('Email sent:', info.response);
+                    resolve(info.response); // Resolve the promise with the email response
+                }
+            });
+        }
     });
 };

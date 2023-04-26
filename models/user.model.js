@@ -4,7 +4,6 @@ const time = require('../models/ticket.model');
 const linkOrOtp = require('../utils/generatecodeorlink');
 const sendEmail = require('../utils/sendEmail');
 const bcrypt = require('bcryptjs');  // importing the bcryptjs library
-const { resolve } = require('path');
 
 module.exports = class user
 {
@@ -540,7 +539,7 @@ module.exports = class user
         });
     };
 
-    static async sendlinkforemailverfication(verification, id)
+    static async sendlinkforemailverfication(verification, id)  
     {
         return new Promise (async (resolve, reject) =>
         {
@@ -564,7 +563,7 @@ module.exports = class user
         {
             try
             {
-                let UpdateQuery = `UPDATE users u SET u.email_verified = '${constants.status.verified}', WHERE u.id = '${id}' `;
+                let UpdateQuery = `UPDATE users u SET u.email_verified = '${constants.status.verified}' WHERE u.id = '${id}' `;
                 con.query(UpdateQuery, (err, result) =>
                 {
                     // console.log(result)

@@ -91,6 +91,8 @@ module.exports =
     {
         Passwordreset : "Passwordreset",
         emailVerfication : "emailVerfication",
-        authentication : "authentication"
-    }
+        authentication : "authentication",
+        text1pr : "Password reset ",
+        text2ev : "Email verification",
+    },
 };

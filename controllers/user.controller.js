@@ -325,16 +325,11 @@ exports.CheckOTP = async (req , res) =>
         }
     }
 };
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
     let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
-    // console.log(userDetails[0].password)
-    // console.log(userDetails[0].confirm_password)
     let link = await user.sendresetlinkforchangingthepassword(userDetails[0].password, userDetails[0].id);
-    // console.log(users)
     if(link)
     {
         res.send
@@ -361,9 +356,9 @@ exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
  * OTP or verification link.  
  */
 
-exports.ResetPasswordThroughLink = async (userDetail, req, res, next ) =>
+exports.ResetPasswordThroughLink = async (id, req, res, next ) =>
 {
-    const users = await user.resetpasswordthroughlink(userDetail.id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
+    const users = await user.resetpasswordthroughlink(id, bcrypt.hashSync(req.body.password, 8), bcrypt.hashSync(req.body.confirm_password, 8) );
     if(users)
     {      
         res.send
@@ -423,11 +418,9 @@ exports.SendLinkForEmailVerfication = async (req, res) =>
     }
 };
 
-exports.VerifyEmailThroughLink = async (newTokenDetails , req , res ) =>
+exports.VerifyEmailThroughLink = async (id, req , res, next) =>
 {
-    console.log('Here',newTokenDetails.id);
-    const email_verify = await user.verifyemailthroughlink(userDetail.id);
-    // console.log(email_verify)
+    const email_verify = await user.verifyemailthroughlink(id);
     if(email_verify)
     {
         res.send

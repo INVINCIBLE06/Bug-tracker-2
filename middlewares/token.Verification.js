@@ -86,11 +86,7 @@ exports.resetPassword = async (req, res, next) =>
                     }
                     else
                     {
-                        const newTokenDetails = {
-                            tokenCreatedAt : tokenCreatedAt,
-                            id : userDetail[0].id
-                        }
-                        next(newTokenDetails);
+                        next(userDetail[0].id);
                     }
                 }     
             }
@@ -114,41 +110,59 @@ exports.resetPassword = async (req, res, next) =>
 };
 
 
-
-
-/// ====================================================================================================================
-
-
-exports.emailVerification = async (req, res, next) => 
+exports.emailVerification = async ( req, res, next ) => 
 {
     let token = await req.params.token;
     // console.log(token);    
-    try
+    try 
     {
         jwt.verify(token, authConfig.secret, async (err, decoded) =>
         {
             if(err)
             {
-                console.log('Error', err.message);
+                console.log('Error', err.message)
                 return res.status(401).send
                 ({
                     message : "The link is not valid !. Please check once again."
                 });
             }
             
-            if(decoded.purpose != constants.purpose.emailVerfication)
+            else if(decoded.purpose != constants.purpose.emailVerfication)
             {
                 return res.status(401).send
                 ({
-                    message : "The link passed is not for email verification. Please check again"
+                    message : "The Token passed is not for verifying email"
                 });
             }
-
+            
             let userDetail = await fetch.getUserDetailsByIdCondition(decoded.id);
             // console.log(userDetail);
 
             if(userDetail)
-            {             
+            {   
+                // if user exists
+                // if(userDetail[0].email_verified == constants.status.notverified)
+                // {
+                //     //if user is already verified
+                //     return res.status(401).send
+                //     ({
+                //         code : 401,
+                //         success : false,
+                //         message : "The user is not verified"
+                //     });
+                // }
+                
+                // if(userDetail[0].password != decoded.unique) 
+                // {
+                //     // console.log("Password is changed. You cannot use the link again");
+                //     return res.status(401).send
+                //     ({
+                //         code : 401,
+                //         success : false,
+                //         message : "Password is changed. You cannot use the link again"
+                //     });
+                // }
+                
                 if(userDetail[0].email_verified == constants.status.verified) 
                 {
                     // console.log("Link is already used. User is verifed as well.");
@@ -181,11 +195,7 @@ exports.emailVerification = async (req, res, next) =>
                     }
                     else
                     {
-                        const newTokenDetails = {
-                            id: userDetail[0].id
-                        }
-                        next(newTokenDetails);
-                        
+                        next(userDetail[0].id);
                     }
                 }     
             }
@@ -205,5 +215,5 @@ exports.emailVerification = async (req, res, next) =>
         ({
             message : "Internal server error while token validation"
         });        
-    }
+    } 
 };

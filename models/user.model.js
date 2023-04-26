@@ -493,7 +493,7 @@ module.exports = class user
 // ------------------------------------------------------------------------------------------------------------------------------- // 
     
 
-    static sendresetlinkforchangingthepassword(password, id)
+    static sendresetlinkforchangingthepassword(password, id, email)
     {
         return new Promise(async (resolve, reject) =>
         {
@@ -501,8 +501,28 @@ module.exports = class user
             {
                 var token = linkOrOtp.token(password, id, constants.purpose.Passwordreset);
                 var link = linkOrOtp.CreateLink(constants.purpose.Passwordreset,token);
-                // console.log(`The Link is ${link}`);
-                resolve(link);      
+                if(link)
+                {
+                    console.log(`The Link is ${link}`);
+                    //console.log(email)
+                    var sendLink = await sendEmail.SendGeneratedValue(email, link, constants.purpose.text1pr);
+                    console.log(sendLink)
+                    if(sendLink)
+                    {
+                        // console.log(`Link send successfully`);
+                        resolve(link);
+                    }
+                    else
+                    {
+                        console.log(`Error while sending link`);
+                        resolve(error);
+                    }
+                }
+                else
+                {
+                    console.log('Error While generating the link');
+                    resolve(error);
+                }      
             } 
             catch(error)
             {
@@ -539,7 +559,7 @@ module.exports = class user
         });
     };
 
-    static async sendlinkforemailverfication(verification, id)  
+    static async sendlinkforemailverfication(verification, id, email)  
     {
         return new Promise (async (resolve, reject) =>
         {
@@ -547,8 +567,25 @@ module.exports = class user
             {
                 var token = linkOrOtp.token(verification, id, constants.purpose.emailVerfication);
                 var link = linkOrOtp.CreateLink(constants.purpose.emailVerfication, token);
-                // console.log(`The Link is ${link}`);
-                resolve(link);                
+                if(link)
+                {
+                    // console.log(`The Link is ${link}`);
+                    var sendLink = await sendEmail.SendGeneratedValue(email, link, constants.purpose.text2ev);
+                    if(sendLink)
+                    {
+                        console.log(`Link send successfully`);
+                        resolve(link);
+                    }
+                    else
+                    {
+                        console.log(`Error while sending link`);
+                        resolve(error);
+                    }
+                }
+                else
+                {
+                    resolve(error);
+                }                
             } 
             catch(error)
             {

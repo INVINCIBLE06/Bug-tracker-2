@@ -329,7 +329,7 @@ exports.CheckOTP = async (req , res) =>
 exports.SendResetLinkForChangingThePassword = async (req , res, next) =>
 {
     let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);
-    let link = await user.sendresetlinkforchangingthepassword(userDetails[0].password, userDetails[0].id);
+    let link = await user.sendresetlinkforchangingthepassword(userDetails[0].password, userDetails[0].id, userDetails[0].email);
     if(link)
     {
         res.send
@@ -395,7 +395,7 @@ exports.SendLinkForEmailVerfication = async (req, res) =>
     }
     else
     {
-        let link = await user.sendlinkforemailverfication(userDetails[0].email_verified, userDetails[0].id)
+        let link = await user.sendlinkforemailverfication(userDetails[0].email_verified, userDetails[0].id, userDetails[0].email)
         if(link)
         {
             res.send

@@ -24,6 +24,8 @@ exports.resetPassword = async (req, res, next) =>
                 console.log('Error', err.message)
                 return res.status(401).send
                 ({
+                    success : false,
+                    code : 401,
                     message : "The link is not valid !. Please check once again."
                 });
             }
@@ -32,6 +34,8 @@ exports.resetPassword = async (req, res, next) =>
             {
                 return res.status(401).send
                 ({
+                    success : false,
+                    code : 401,
                     message : "The Token passed is not for resetting password"
                 });
             }
@@ -42,16 +46,16 @@ exports.resetPassword = async (req, res, next) =>
             if(userDetail)
             {   
                 // if user exists
-                // if(userDetail[0].email_verified == constants.status.notverified)
-                // {
-                //     //if user is already verified
-                //     return res.status(401).send
-                //     ({
-                //         code : 401,
-                //         success : false,
-                //         message : "The user is not verified"
-                //     });
-                // }
+                if(userDetail[0].email_verified == constants.status.notverified)
+                {
+                    //if user is already verified
+                    return res.status(401).send
+                    ({
+                        code : 401,
+                        success : false,
+                        message : "The user is not verified"
+                    });
+                }
                 
                 if(userDetail[0].password != decoded.unique) 
                 {
@@ -81,7 +85,9 @@ exports.resetPassword = async (req, res, next) =>
                         // sendEmail.resetPassword(req.user); // if token is expired, a new token is sent to email-Id
                         return res.status(401).send
                         ({
-                            message : "This link has expired. A new link has been sent to your email address."
+                            success : false,
+                            code : 401,
+                            message : "This link is expired"
                         }); 
                     }
                     else
@@ -94,6 +100,8 @@ exports.resetPassword = async (req, res, next) =>
             {
                 return res.status(401).send
                 ({
+                    success : false,
+                    code : 401,
                     message : "User not found"
                 });
             }
@@ -104,6 +112,8 @@ exports.resetPassword = async (req, res, next) =>
         console.log("#### Error while velidating reset password token ##### ", err.message);
         res.status(500).send
         ({
+            success : false,
+            code : 500,
             message : "Internal server error while token validation"
         });        
     }
@@ -123,6 +133,8 @@ exports.emailVerification = async ( req, res, next ) =>
                 console.log('Error', err.message)
                 return res.status(401).send
                 ({
+                    success : false,
+                    code : 401,
                     message : "The link is not valid !. Please check once again."
                 });
             }
@@ -131,6 +143,8 @@ exports.emailVerification = async ( req, res, next ) =>
             {
                 return res.status(401).send
                 ({
+                    success : false,
+                    code : 401,
                     message : "The Token passed is not for verifying email"
                 });
             }
@@ -168,7 +182,9 @@ exports.emailVerification = async ( req, res, next ) =>
                         // sendEmail.resetPassword(req.user); // if token is expired, a new token is sent to email-Id
                         return res.status(401).send
                         ({
-                            message : "This link has expired. A new link has been sent to your email address."
+                            success : false,
+                            code : 401,
+                            message : "This link is expired"
                         }); 
                     }
                     else
@@ -181,7 +197,9 @@ exports.emailVerification = async ( req, res, next ) =>
             {
                 return res.status(401).send
                 ({
-                    message : "User not found"
+                    success : false,
+                    code : 401,
+                    message : "User not found !"
                 });
             }
         });
@@ -191,7 +209,126 @@ exports.emailVerification = async ( req, res, next ) =>
         console.log("#### Error while velidating reset password token ##### ", err.message);
         res.status(500).send
         ({
+            success : false,
+            code : 500,
             message : "Internal server error while token validation"
         });        
     } 
+};
+
+
+exports.IsAdminTokenVerification = async (req, res, next) =>
+{
+    let token = await req.headers['access-token'];
+    // console.log(token);
+
+    if(!token)
+    {
+        return res.status(403).send
+        ({
+            success : false,
+            code : 403,
+            message : "No Token Provided"
+        });
+    }
+
+    try 
+    {
+        jwt.verify(token, authConfig.secret, async (err, decoded) =>
+        {
+            if(err)
+            {
+                console.log('Error', err.message)
+                return res.status(401).send
+                ({
+                    success : false,
+                    code : 401,
+                    message : "The link is not valid !. Please check once again."
+                });
+            }
+
+            if(decoded.purpose != constants.purpose.authentication)
+            {
+                return res.status(401).send
+                ({
+                    success : false,
+                    code : 401,
+                    message : "The Token passed is not for authorization"
+                });
+            }
+
+            let userDetail = await fetch.getUserDetailsByIdCondition(decoded.id);
+            // console.log(userDetail);
+
+            if(userDetail)
+            {
+                // console.log(decoded.role);
+                if(decoded.role != constants.role.admin)
+                {
+                    res.status(403).send
+                    ({
+                        success : false,
+                        code : 403,
+                        message : "require admin role"
+                    });
+                }
+
+                else if(userDetail[0].email_verified == constants.status.notverified)
+                {
+                    res.status(403).send
+                    ({
+                        success : false,
+                        code : 403,
+                        message : "Your email is not verified. Please verified it first"
+                    });
+                }
+
+                else
+                {
+                    const tokenCreatedAt = time.convertUnixTimeIntoSimpleFormat(decoded.iat) ;  //time converted to miliseconds
+                    // console.log('This is created time of Token - ', tokenCreatedAt);
+                    
+                    const tokenExpiresAt = time.convertUnixTimeIntoSimpleFormat(decoded.exp);                
+                    // console.log('Token expiration time :- ', tokenExpiresAt);
+
+                    const now = time.nowd();
+                    // console.log(`Current time - `, now)
+                    
+                    if(tokenExpiresAt <= now)
+                    {   
+                        // checks if token is more then certain time old
+                        // sendEmail.resetPassword(req.user); // if token is expired, a new token is sent to email-Id
+                        return res.status(401).send
+                        ({
+                            success : false,
+                            code : 401,
+                            message : "Token is expired !"
+                        }); 
+                    }
+                    else
+                    {
+                        next();
+                    }                    
+                }
+            }
+            else
+            {
+                console.log('User not found');
+                return res.status(401).send
+                ({
+                    status : false,
+                    code : 401,
+                    message : "Invalid User"
+                });
+            }
+        });        
+    }
+    catch(error)
+    {
+        console.log("#### Error while velidating authori    zation token ##### ", err.message);
+        res.status(500).send
+        ({
+            message : "Internal server error while token validation"
+        });    
+    }
 };

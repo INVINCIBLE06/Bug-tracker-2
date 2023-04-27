@@ -92,9 +92,14 @@ module.exports =
         Passwordreset : "Passwordreset",
         emailVerfication : "emailVerfication",
         authentication : "authentication",
-        text1pr : "Password reset ",
-        text2ev : "Email verification",
     },
+
+    subject :
+    {
+        pr : "Password reset",
+        ev : "Email verification",
+        tan : "Ticket Assigned Notofication"
+    }
 };
 
 

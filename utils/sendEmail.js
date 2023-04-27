@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-exports.SendGeneratedValue = (to, value, purpose) =>
+exports.SendGeneratedValue = (recipient, subject, description) =>
 {
     return new Promise((resolve, reject) =>
     {
@@ -16,56 +16,27 @@ exports.SendGeneratedValue = (to, value, purpose) =>
             },
             secure : true,
         });
-
-
-        if(value.length == 6)
+        
+        const mailOptions = 
         {
-            const mailOptions = 
-            {
-                from : process.env.adminemail, // replace with your email address
-                to : to, // recipient's email address
-                subject : 'Verification',
-                text : `Your OTP for ${purpose} is: ${value}`
-            };
+            from : process.env.adminemail, // replace with your email address
+            to : recipient, // recipient's email address
+            subject : subject, 
+            text : description
+        };
 
-            transporter.sendMail(mailOptions, (error, info) => 
-            {
-                if(error)
-                {
-                    // console.error('Error sending email:', error);
-                    reject(error); // Reject the promise with the error
-                }
-                else
-                {
-                    // console.log('Email sent:', info.response);
-                    resolve(info.response); // Resolve the promise with the email response
-                }
-            });
-            
-        }
-        else
+        transporter.sendMail(mailOptions, (error, info) => 
         {
-            const mailOptions = 
+            if(error)
             {
-                from : process.env.adminemail, // replace with your email address
-                to : to, // recipient's email address
-                subject : 'Verification',
-                text : `Your Link for ${purpose} is: ${value}`
-            };
-
-            transporter.sendMail(mailOptions, (error, info) => 
+                // console.error('Error sending email:', error);
+                reject(error); // Reject the promise with the error
+            }
+            else
             {
-                if(error)
-                {
-                    // console.error('Error sending email:', error);
-                    reject(error); // Reject the promise with the error
-                }
-                else
-                {
-                    // console.log('Email sent:', info.response);
-                    resolve(info.response); // Resolve the promise with the email response
-                }
-            });
-        }
+                // console.log('Email sent:', info.response);
+                resolve(info.response); // Resolve the promise with the email response
+            }
+        });
     });
 };

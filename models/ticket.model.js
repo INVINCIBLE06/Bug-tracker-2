@@ -1,7 +1,9 @@
-const con = require('../configs/db.config');  // importing the database details
 const date = require('date-and-time'); // importing the date-and-time library and assigning it to the date variables
+const { v4 : uuidv4 } = require('uuid'); // import uuid module for generating unique identifier 
+
+const con = require('../configs/db.config');  // importing the database details
 const constants = require('../utils/constants'); // Here we are importing the constants file details and intializing it into the constants variable
-const { v4: uuidv4 } = require('uuid'); // import uuid module for generating unique identifier 
+const sendEmail = require('../utils/sendEmail');
 
 module.exports = class ticket
 {
@@ -11,8 +13,9 @@ module.exports = class ticket
     {
         try
         {
-            return await new Promise((resolve, reject)=>
-            { // the below line of query will be finding the user in the database or that that user is active or inactive. Because only the active user can create the ticket. The person who is creating the ticket there email is in the reporter variable.
+            return await new Promise(async (resolve, reject)=>
+            { 
+                // the below line of query will be finding the user in the database or that that user is active or inactive. Because only the active user can create the ticket. The person who is creating the ticket there email is in the reporter variable.
                 let selRQuery = `SELECT * FROM users u WHERE u.email = '${reporter}' AND u.status = '${constants.status.active}' `; // reporter = ticket creator email and process.env.adminstatus = active
                 con.query(selRQuery, [reporter], (err, result1) => // executing the above query
                 {
@@ -46,45 +49,55 @@ module.exports = class ticket
                                             else
                                             {
                                                 let insQuery = `INSERT INTO tickets(title, description, reporter, assignee, image_name, created_at, updated_at, expired_at, reporter_Id, assignee_Id) VALUES (?,?,?,?,?,?,?,?, '${result1[0].id}', '${result2[0].idu}')`;
-                                                con.query(insQuery, [title, description, reporter, assignee, filename, (nowd()), updated_at, (DAYADD(2))], (err, result3)=>
+                                                con.query(insQuery, [title, description, reporter, assignee, filename, (nowd()), updated_at, (DAYADD(2))], async (err, result3)=>
                                                 // exceuting the above query. All the values are entered by the user in the response
                                                 { 
                                                     if(result3.length != 0) // If ticket successfully created
                                                     {
-                                                        let selticId = `SELECT t.id AS ticid FROM tickets t WHERE t.title = '${title}' AND t.description = '${description}' AND t.reporter = '${reporter}' AND t.assignee = '${assignee}' AND  t.created_at = '${nowd()}'`;
-                                                        con.query(selticId, (err, result4) =>
+                                                        let description = `This is to notify that "${result1[0].name}" with user_Id "${result1[0].id}" has created a ticket with the title "${title}". Please review and resolve it at the earliest.`;
+                                                        let notify = await sendEmail.SendGeneratedValue(assignee, constants.subject.tan ,description)
+                                                        if(notify)
                                                         {
-                                                            if(result4.length == 0)
-                                                            {
-                                                                console.log('Error happened while fetching the ticket id', err);
-                                                            }
-                                                            else
-                                                            {
-                                                                console.log('File upload');
-                                                                let insintotLogg = `CALL insertintotickets_activities('sdssvs', '${result4[0].ticid}', '${result1[0].id}', '${result2[0].idu}', '${constants.activity.created}', '${constants.status.open}', '${constants.priority.normal}', 'This is just for the checking purpose')`;
-                                                                con.query(insintotLogg, (err, result5) =>
+                                                            let selticId = `SELECT t.id AS ticid FROM tickets t WHERE t.title = '${title}' AND t.description = '${description}' AND t.reporter = '${reporter}' AND t.assignee = '${assignee}' AND  t.created_at = '${nowd()}'`;
+                                                            con.query(selticId, (err, result4) =>
+                                                            {      
+                                                                if(result4.length == 0)
                                                                 {
-                                                                    if(result5.length == 0)
+                                                                    console.log('Error happened while fetching the ticket id', err);
+                                                                }
+                                                                else
+                                                                {
+                                                                    console.log('File upload');
+                                                                    let insintotLogg = `CALL insertintotickets_activities('sdssvs', '${result4[0].ticid}', '${result1[0].id}', '${result2[0].idu}', '${constants.activity.created}', '${constants.status.open}', '${constants.priority.normal}', 'This is just for the checking purpose')`;
+                                                                    con.query(insintotLogg, (err, result5) =>
                                                                     {
-                                                                        console.log("Error happen while inserting the data into the ticket logged", err.message)
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        resolve('true'); // result sent back to the controller. From where it is called
-                                                                        console.log(`Data entered into the "ticket_logged" table while creating the ticket id '${result4[0].ticid}' .`);
-                                                                        console.log("Ticket created successfully");      
-                                                                    }
-                                                                });                                                                                                                                                                  
-                                                            }
-                                                        });
+                                                                        if(result5.length == 0)
+                                                                        {
+                                                                            console.log("Error happen while inserting the data into the ticket logged", err.message)
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            resolve('true'); // result sent back to the controller. From where it is called
+                                                                            console.log(`Data entered into the "ticket_logged" table while creating the ticket id '${result4[0].ticid}' .`);
+                                                                            console.log("Ticket created successfully");
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                        else
+                                                        {
+                                                            console.log("Error while notifing the assignee that a ticket is being assigned", err.message);
+                                                            reject(err);
+                                                        }
                                                     }
                                                     else // encountered any kind of error while creating the ticket
                                                     {   
                                                         console.log("Error while creating the ticket", err.message);
                                                         reject(err); // error will send back to the controller. From where it is called
                                                     }
-                                                });                                                                                                      
-                                            }                                                    
+                                                });
+                                            }
                                         });
                                     }
                                     else

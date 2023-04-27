@@ -503,9 +503,9 @@ module.exports = class user
                 var link = linkOrOtp.CreateLink(constants.purpose.Passwordreset,token);
                 if(link)
                 {
-                    console.log(`The Link is ${link}`);
-                    //console.log(email)
-                    var sendLink = await sendEmail.SendGeneratedValue(email, link, constants.purpose.text1pr);
+                    let description = `The Link for ${constants.subject.ev} is ${link}`
+                    //console.log(description)
+                    var sendLink = await sendEmail.SendGeneratedValue(email, constants.subject.pr, description);
                     console.log(sendLink)
                     if(sendLink)
                     {
@@ -569,8 +569,9 @@ module.exports = class user
                 var link = linkOrOtp.CreateLink(constants.purpose.emailVerfication, token);
                 if(link)
                 {
-                    // console.log(`The Link is ${link}`);
-                    var sendLink = await sendEmail.SendGeneratedValue(email, link, constants.purpose.text2ev);
+                    let description = `The Link for ${constants.subject.ev} is ${link}`
+                    // recipient, subject, description
+                    var sendLink = await sendEmail.SendGeneratedValue(email, constants.subject.ev, description );
                     if(sendLink)
                     {
                         console.log(`Link send successfully`);

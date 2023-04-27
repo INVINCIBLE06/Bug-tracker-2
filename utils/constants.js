@@ -103,27 +103,3 @@ module.exports =
 };
 
 
-/*
-db = mydb9
-DBPASSWORD = 
-USER_ROOT = root
-USER_HOST = localhost
-
-PORT = 8080
-
-adminemail = sp832154@gmail.com
-adminname = Saurabh Pande
-adminmobile = 8421168035
-admindateofbirth = 1997/11/06
-adminanswer = SPIDERMAN
-adminpassword = asdf@1234
-adminconfirmpassword = asdf@1234
-
-password = ybpkooosqsbpboeu
-
-JWT_TIME = 36400
-EMAIL_TOKEN_TIME = 1800
-
-APP_URL = http://localhost:8080
-
-*/

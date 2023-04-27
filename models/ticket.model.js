@@ -709,7 +709,7 @@ module.exports = class ticket
                 {
                     resolve(result); // error will send back to the controller. From where it is called
                 }
-            });            
+            });
         });
     };
 

@@ -89,11 +89,13 @@ exports.signin = async (req, res) =>
                                             });
                                         }
                                         else // After password is correct then we are checking whether that user is a ACTIVE user or INACTIVE user
-                                        {   // If active user then they will get the dashboard
+                                        {   
+                                            // If active user then they will get the dashboard
                                             // the below query is for call the stored procedure. That procedure will be used to enter the ip_address, user_id, login type, browser description into users_activities
                                             let StrCallQuery = `CALL insertintousers_activities('svdv4854', '${result[0].User_Id}', '${constants.loggedStatus.login}', 'This is just of checking purpose for logout')`;
                                             con.query(StrCallQuery, (err, resultlg) => // executing the above query
-                                            { // if the procedured executed successfully then this if block code is executed
+                                            { 
+                                                // if the procedured executed successfully then this if block code is executed
                                                 if(resultlg.length != 0)
                                                 {
                                                     console.log(`Data entered of the user whose id is '${result[0].User_Id}' into the users_activities table at the time of login`);
@@ -105,14 +107,15 @@ exports.signin = async (req, res) =>
                                                             const token = jwt.sign
                                                             ({
                                                                 id : result[0].User_Id,
-                                                                purpose: constants.purpose.authentication
+                                                                purpose: constants.purpose.authentication,
+                                                                role : result[0].role_name
                                                             },
                                                             authConfig.secret,
                                                             {
                                                                 expiresIn : constants.day_or_minutes_protection_policy_numbers.token_time
                                                             }); // expiery time is 24 hours
                                                             
-                                                            // console.log(token)
+                                                            // console.log(token);
                                                             
                                                             console.log(` #### Data entered into the report table while login for the user_id '${result[0].User_Id}' #### `);
                                                             console.log(` #### User with id '${result[0].User_Id}' logged in successfully #### `);
@@ -125,7 +128,7 @@ exports.signin = async (req, res) =>
                                                                 data :
                                                                 {
                                                                     users : result,
-                                                                    // access : token, 
+                                                                    access : token, 
                                                                     // module : resultMID
                                                                 }
                                                             });

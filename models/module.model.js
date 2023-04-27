@@ -9,7 +9,7 @@ module.exports = class module
         return new Promise((resolve, reject)=>
         { // Thorugh the below line we will insert into the module table
             let insQuery = `INSERT INTO modules(module_name, active) VALUES (?, ?)`;
-                con.query(insQuery, [module_name, active], (err, result)=>  // execute of the above query
+                con.query(insQuery, [module_name.toLocaleUpperCase(), active], (err, result)=>  // execute of the above query
                 {
                     if(result) // if result successful then this if code will execute
                         {
@@ -30,11 +30,11 @@ module.exports = class module
         return new Promise((resolve, reject)=>
         {// Thorugh the below line we will select the module which has to be updated
             let selQuery = `SELECT * FROM modules WHERE module_name = ?`;
-                con.query(selQuery, [module_name], (err, result)=> // execute of the above query
+                con.query(selQuery, [module_name.toLocaleUpperCase()], (err, result)=> // execute of the above query
                 { // If that module name is available then this if code woll get executed
                     if(result.length > 0)
                     { // The below query will update that module name. And it will change it wiht new name. Which was entered by the user in the nody 
-                        let userDetails = `UPDATE modules m SET m.module_name = '${new_module_name}' WHERE m.module_name = '${module_name}'`;
+                        let userDetails = `UPDATE modules m SET m.module_name = '${new_module_name.toLocaleUpperCase()}' WHERE m.module_name = '${module_name}'`;
                             con.query(userDetails, (err, result) => // execute of the above query
                             { // If the update is successfully done then this if code will be executed otherise the controller will shift to the else part
                                 if(result)

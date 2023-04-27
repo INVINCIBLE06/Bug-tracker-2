@@ -10,7 +10,7 @@ const path = require('path'); // Importing the path library. Intialing it into t
 
 exports.AddNewTicket = async(req, res, next)=>
 {
-    let tickets = await ticket.CreateTicket(req.body.title, req.body.description, req.body.reporter, req.body.assignee, req.body.created_at, req.body.updated_at, req.body.expired_at, req.files);
+    let tickets = await ticket.main.addnewticket(req.body.title, req.body.description, req.body.reporter, req.body.assignee, req.body.created_at, req.body.updated_at, req.body.expired_at, req.files);
     if(tickets)
     {
         return res.status(200).send
@@ -37,9 +37,9 @@ exports.AddNewTicket = async(req, res, next)=>
  * it is user to ticket
  */
 
-exports.getalltickets = async(req, res, next) => 
+exports.GetAllTic = async(req, res, next) => 
 {
-    let tickets = await ticket.getalltic();
+    let tickets = await ticket.ticket.getalltic();
     if(tickets)
     {
         return res.status(200).send

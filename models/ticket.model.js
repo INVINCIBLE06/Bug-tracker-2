@@ -5,11 +5,12 @@ const con = require('../configs/db.config');  // importing the database details
 const constants = require('../utils/constants'); // Here we are importing the constants file details and intializing it into the constants variable
 const sendEmail = require('../utils/sendEmail');
 
-module.exports = class ticket
+const    main = class ticket
 {
-    constructor(){}
+    // constructor(){}
     // the below code is for creating the ticket.  
-    static async CreateTicket(title, description, reporter, assignee, created_at, updated_at, expired_at, files)
+        
+    static async addnewticket(title, description, reporter, assignee, created_at, updated_at, expired_at, files)
     {
         try
         {
@@ -147,6 +148,7 @@ module.exports = class ticket
             });
         });
     };
+    
     // From this block of code we will get all the resolved tickets that are available in the ticket table 
     static getallresolvedticket()
     {
@@ -221,7 +223,9 @@ module.exports = class ticket
                 });
         });
     };
-// the below function will give us all the ticet that are assigned to a particular engineer. We need assignee email in params
+
+
+    // the below function will give us all the ticet that are assigned to a particular engineer. We need assignee email in params
     static getAssignedTicket(assignee) // getting the assignee email in assignee variabel
     {
         return new Promise((resolve, reject) =>
@@ -771,7 +775,8 @@ const timeexportfunction =
     nowd,
     minutesAdd,
     convertDatePickerTimeToMySQLTime,
-    convertUnixTimeIntoSimpleFormat
+    convertUnixTimeIntoSimpleFormat,
+    main
 }
 
 module.exports = timeexportfunction;

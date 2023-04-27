@@ -7,7 +7,7 @@ module.exports = function(app)
     // the below route will be used to create the ticker
     app.post('/create/ticket/new', ticketcontroller.AddNewTicket);    
     // through the below ticket we will get all the ticket available in the database
-    app.get('/get/all/ticket', ticketcontroller.getalltickets);
+    app.get('/get/all/ticket', ticketcontroller.GetAllTic);
     // The below route will give all the expired ticket data
     app.get('/get/all/expired/ticket', ticketcontroller.GetExpiredTicket);
     // the below route will give all the which were asssignn to a particular enginee on the basisi of params

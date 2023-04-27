@@ -5,6 +5,8 @@ const { passwordvalidation } = require("../middlewares/password.middleware"); //
 const { birthdateValidation } = require("../middlewares/dateofbirth.middleware") // importing the details for validating date of birth
 const { contactvalidation } = require("../middlewares/contactnumber.middlware"); // importing the details for validating contact number
 const verifyparams = require('../middlewares/verifyparams'); // Importing the middlware for the validation of body and params data
+const tokenVerification = require('../middlewares/token.verification'); 
+
 
 module.exports = function(app)
 {
@@ -12,7 +14,7 @@ module.exports = function(app)
      * below route will be used to add or signup the user
      * email password contact and birthdate all will be validated and then it will be added to the database
      */
-    app.post('/add/new/user', emailvalidation, passwordvalidation, contactvalidation, birthdateValidation, duplicatecheck.duplicateValueEmail, duplicatecheck.duplicateValueMobile, authcontroller.AddNewUser);
+    app.post('/add/new/user', tokenVerification.IsAdminTokenVerification, emailvalidation, passwordvalidation, contactvalidation, birthdateValidation, duplicatecheck.duplicateValueEmail, duplicatecheck.duplicateValueMobile, authcontroller.AddNewUser);
     /**
      * below route will be used to signin the user
      * email and password will be validated and then it will be able to signin

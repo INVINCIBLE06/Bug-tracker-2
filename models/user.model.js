@@ -55,7 +55,7 @@ module.exports = class user
                                                         {
                                                             if(resultPI.length != 0) // if we inserted the data into the permission table, then this if block code will be executed 
                                                             {
-                                                                //console.log("First into the permission table");
+                                                                // console.log("First into the permission table");
                                                                 resolve('true'); // result sent back to the controller. From where it is called
                                                             }
                                                             else // IF any error encountered while inserting the data into the permission table
@@ -125,6 +125,8 @@ module.exports = class user
             console.log("Error While Signuping the user", error);                
         }
     }
+
+
 // The below function is for forgot password.
     static async forPas(email, security_answer, password, confirm_password) // The values which we are taking from the user email, security_answer, password, and confirm_password
     {
@@ -503,7 +505,7 @@ module.exports = class user
                 var link = linkOrOtp.CreateLink(constants.purpose.Passwordreset,token);
                 if(link)
                 {
-                    let description = `The Link for ${constants.subject.ev} is ${link}`
+                    let description = `The Link for ${(constants.subject.ev).toLowerCase()} is ${link}`
                     //console.log(description)
                     var sendLink = await sendEmail.SendGeneratedValue(email, constants.subject.pr, description);
                     console.log(sendLink)
@@ -569,7 +571,7 @@ module.exports = class user
                 var link = linkOrOtp.CreateLink(constants.purpose.emailVerfication, token);
                 if(link)
                 {
-                    let description = `The Link for ${constants.subject.ev} is ${link}`
+                    let description = `The Link for ${(constants.subject.ev).toLowerCase()} is ${link}`
                     // recipient, subject, description
                     var sendLink = await sendEmail.SendGeneratedValue(email, constants.subject.ev, description );
                     if(sendLink)

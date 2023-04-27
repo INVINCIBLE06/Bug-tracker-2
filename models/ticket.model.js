@@ -54,8 +54,8 @@ module.exports = class ticket
                                                 { 
                                                     if(result3.length != 0) // If ticket successfully created
                                                     {
-                                                        let description = `This is to notify that "${result1[0].name}" with user_Id "${result1[0].id}" has created a ticket with the title "${title}". Please review and resolve it at the earliest.`;
-                                                        let notify = await sendEmail.SendGeneratedValue(assignee, constants.subject.tan ,description)
+                                                        let body = `This is to notify that "${result1[0].name}" with user_Id "${result1[0].id}" has created a ticket with the title "${title}" and description "${description}". Please review and resolve it at the earliest.`;
+                                                        let notify = await sendEmail.SendGeneratedValue(assignee, constants.subject.tan, body)
                                                         if(notify)
                                                         {
                                                             let selticId = `SELECT t.id AS ticid FROM tickets t WHERE t.title = '${title}' AND t.description = '${description}' AND t.reporter = '${reporter}' AND t.assignee = '${assignee}' AND  t.created_at = '${nowd()}'`;

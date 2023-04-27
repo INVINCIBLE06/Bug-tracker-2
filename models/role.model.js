@@ -5,12 +5,12 @@ module.exports = class role
 { 
     constructor(){}
     // static addOne(name, author, price, adminid)
-    static addOneRole(role_name)  // here we are getting the rolename. Which was entered by the user in the req body
+    static async addOneRole(role_name)  // here we are getting the rolename. Which was entered by the user in the req body
     { // This function is written for adding the role in the database
-        return new Promise((resolve, reject)=>
+        return await new Promise((resolve, reject)=>
         { // the below query is for adding the role into the databse
             let insQuery = `INSERT INTO roles(role_name) VALUES (?)`;
-                con.query(insQuery, [role_name], (err, result)=> // executing the above query
+                con.query(insQuery, [role_name.toLocaleUpperCase()], (err, result)=> // executing the above query
                 {
                     if(result) // if succesffull
                         {
@@ -30,11 +30,11 @@ module.exports = class role
         return new Promise((resolve, reject)=>
         {  // the below line of code is for seleting the rolename which was desired for getting updated
             let selQuery = `SELECT * FROM roles r WHERE r.role_name = ?`;
-                con.query(selQuery, [role_name], (err, result)=> // Executing the above lines of codes
+                con.query(selQuery, [role_name.toLocaleUpperCase()], (err, result)=> // Executing the above lines of codes
                 {
                     if(result.length > 0) // if succesfully found that role name.
                     { // then this below update query will be execute
-                        let userDetails = `UPDATE roles r SET r.role_name = '${new_rolename}' WHERE r.role_name = '${role_name}'`;
+                        let userDetails = `UPDATE roles r SET r.role_name = '${new_rolename.toLocaleUpperCase()}' WHERE r.role_name = '${role_name}'`;
                             con.query(userDetails, (err, result)=> // eexecuting the above query
                             {
                                 if(result) // if succesfully 

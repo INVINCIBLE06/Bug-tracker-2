@@ -91,7 +91,9 @@ This project contains the Node.js back-end code for a bug tracker application th
 `Database Elements`
 
 - Tables, stored procedures, events, and functions will all be created from the backend.
-- The event environment is set to ON, as it is required for our events to work.## Prerequisite
+- The event environment is set to ON, as it is required for our events to work.
+
+## Prerequisite
 
 - Basic knowledge of Node.js.
 - Understanding and working knowledge of Promises.
@@ -121,6 +123,10 @@ This project contains the Node.js back-end code for a bug tracker application th
 |jsonwebtoken|
 |date-and-time|
 |express-fileupload|
+
+
+
+
 
 ## Installation
 

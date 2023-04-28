@@ -5,7 +5,7 @@ const con = require('../configs/db.config');  // importing the database details
 const constants = require('../utils/constants'); // Here we are importing the constants file details and intializing it into the constants variable
 const sendEmail = require('../utils/sendEmail');
 
-const    main = class ticket
+const main = class ticket
 {
     // constructor(){}
     // the below code is for creating the ticket.  

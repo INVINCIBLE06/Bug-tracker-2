@@ -1,6 +1,7 @@
 const messagecontroller = require('../controllers/message.controller'); // Importing the message controller details
 const verifyparams = require('../middlewares/verifyparams');  // Importing the middlware for the validation of body and params data
 const { emailvalidation } = require("../middlewares/email.middleware"); // importing the email validation
+
 module.exports = function(app)
 {
     // This route is for the reporter message side

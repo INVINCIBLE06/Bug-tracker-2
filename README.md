@@ -20,6 +20,15 @@ This project contains the Node.js back-end code for a bug tracker application th
 - All users will be registered as 'ACTIVE' because they are being added by the 'ADMIN' themselves.
 - JSON Web Token used for authentication.
 
+`Ticket Creation`
+
+- When a new ticket is created, an 'ACTIVE' engineer can be assigned the ticket. The person creating the ticket will select the engineer by their email.
+- On new ticket creation, a notification email is sent assigned engineer. 
+- Users can get all the tickets connected to their account.
+- When a ticket is created, its priority will be set to 'NORMAL'. However, if no work is started on the ticket within 2 days, the priority of that ticket will be changed to 'URGENT'.
+- Only an 'ENGINEER' can set a ticket to 'RESOLVED'. Only an 'ADMIN' has the authority to close a ticket.
+- Once a ticket is 'CLOSED', it cannot be reopened. 
+
 `Password Reset Or Changing`
 
 - Password changing can happen in a number of ways.
@@ -41,6 +50,8 @@ This project contains the Node.js back-end code for a bug tracker application th
 - For password changing, we send an email to the user.
 - When a ticket is assigned to a user, we send an email notification to the user.
 - We can send emails from anywhere in the application, as it is a separate file that only requires the recipient's email, subject, and description.
+
+
 
 ## Prerequisite
 

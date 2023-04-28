@@ -39,7 +39,7 @@ exports.AddNewTicket = async(req, res, next)=>
 
 exports.GetAllTic = async(req, res, next) => 
 {
-    let tickets = await ticket.ticket.getalltic();
+    let tickets = await ticket.main.getalltic();
     if(tickets)
     {
         return res.status(200).send
@@ -61,36 +61,11 @@ exports.GetAllTic = async(req, res, next) =>
     }
 };
 
-/**
- * The belwo function have the code for updating the ticket status to URGENT. If that ticket is in open 
- * status for last three days 
- */
-exports.GetExpiredTicket = async(req, res, next) =>
-{
-    let tickets = await ticket.AutomaticUpdateticketAfterParticularTime();
-    if(tickets)
-    {
-        return res.status(200).send
-        ({
-            success : true,
-            code : 200,
-            message : "Ticket priority updated sucessfully"
-        });
-    }
-    else
-    {
-        return res.status(400),send
-        ({
-            success : true,
-            code : 400,
-            message : "No ticket is there for updation"
-        });
-    }    
-};
+
 // The below function is used for getting the assigned ticket to a engineer.Because the engineer are only getting the ticket assigned
 exports.GetAssignedTicket = async(req, res, next) => 
 {
-    let tickets = await ticket.getAssignedTicket(req.params.assignee) // On the baisi of assignee or engineer email id in the params
+    let tickets = await ticket.main.getassignedticket(req.params.assignee) // On the basis of assignee or engineer email id in the params
     if(tickets.length != 0)
     {
         return res.status(200).send
@@ -116,7 +91,7 @@ exports.GetAssignedTicket = async(req, res, next) =>
 
 exports.GetCreatedTicket = async(req, res, next) =>
 {
-    let tickets = await ticket.getcreatedticket(req.params.reporter); // On the basis of reporter email id in the params
+    let tickets = await ticket.main.getcreatedticket(req.params.reporter); // On the basis of reporter email id in the params
     if(tickets.length != 0)
     {
         return res.status(200).send
@@ -147,7 +122,7 @@ exports.GetCreatedTicket = async(req, res, next) =>
 exports.EngineerStartedWorkignOnTheTicket = async(req, res, next) =>
 {
     // Here will take message for user in the body and ticket id in the params for the updation. Message is required for updating the ticket
-    let tickets = await ticket.engineerstartedworkignontheticket(req.params.id, req.body.message);  
+    let tickets = await ticket.main.engineerstartedworkignontheticket(req.params.id, req.body.message);  
     // console.log(tickets)
     if(tickets[0].status == constants.status.pending)
     {
@@ -191,11 +166,11 @@ exports.EngineerStartedWorkignOnTheTicket = async(req, res, next) =>
     }
 };
 
-// below function will return us all the tickets which are having status as resolved
+// Below function will return us all the tickets which are having status as resolved
 
 exports.GetAllResolvedTicket = async(req, res, next) => 
 {
-    let tickets = await ticket.getallresolvedticket();
+    let tickets = await ticket.main.getallresolvedticket();
     if(tickets)
     {
         return res.status(200).send
@@ -216,12 +191,13 @@ exports.GetAllResolvedTicket = async(req, res, next) =>
             }) 
     }
 };
-// below function will used for the admin. Because the admin is the only one who can close the ticket after resolved
+
+// Below function will used for the admin. Because the admin is the only one who can close the ticket after resolved
 // Engineer cannot close the ticket. They can just update the status till resolved after that only admin can do it
 exports.AdminWillChangeTheTicketStatusToClose = async (req, res) =>
 {
     // Taking the message form the req body and ticket id in the params for updating this is made for only the admin. 
-    let tickets = await ticket.adminwillchangetheticketstatustoclose(req.params.id, req.body.message);
+    let tickets = await ticket.main.adminwillchangetheticketstatustoclose(req.params.id, req.body.message);
     if(tickets.length != 0)
     {
         return res.send
@@ -249,7 +225,7 @@ exports.AdminWillChangeTheTicketStatusToClose = async (req, res) =>
 
 exports.GetAllUrgentPriorityTicket = async(req, res) =>
 {
-    let tickets = await ticket.getallurgentpriorityticket();
+    let tickets = await ticket.main.getallurgentpriorityticket();
     if(tickets.length != 0) // If there are ticket available whose priority are URGENT. The below block of code will be executed
     {
         return res.status(200).send
@@ -287,7 +263,7 @@ exports.GetAllUrgentPriorityTicket = async(req, res) =>
 
 exports.PrioritySetToUrgentbutWorkNotStarted = async(req, res) =>
 {
-    let tickets = await ticket.priorityspetourgentbutworknotstarted();
+    let tickets = await ticket.main.priorityspetourgentbutworknotstarted();
     if(tickets.length != 0)  // If we have the code successfully executed and we have ticket whose meets the condition then this block of code will be executed
     {
         return res.status(200).send
@@ -321,9 +297,9 @@ exports.PrioritySetToUrgentbutWorkNotStarted = async(req, res) =>
 
 // The below function is for getting the tickets report for the particular who have created it
 
-exports.ParticularUserTicketActivityReport = async(req, res) =>
+exports.ParticularUserTicketActivityReport = async (req, res) =>
 {
-    let tickets = await ticket.particularuserticketactivityreport(req.params.id);
+    let tickets = await ticket.main.particularuserticketactivityreport(req.params.id);
     if(tickets != 0)
     {
         return res.send
@@ -349,7 +325,7 @@ exports.ParticularUserTicketActivityReport = async(req, res) =>
 // The below function is for getting the ticket activity report for all the tickets available in the database 
 exports.AllTicketActivityReport = async (req, res) =>
 {
-    let tickets = await ticket.allticketactivityreport();
+    let tickets = await ticket.main.allticketactivityreport();
     if(tickets)
     {
         res.send
@@ -377,71 +353,40 @@ exports.AllTicketActivityReport = async (req, res) =>
  * The below function contains the code for dowloading the attachment. The attachment is attached at the time of
  * ticket creation. 
  */
-
-exports.DownloadAttachment = (req, res) => 
-{// The below query will give us the image name of the attachment which was there in the databse for the ticket id entered in the params.
-    let selQuery = `SELECT t.image_name FROM tickets t WHERE t.id = '${req.params.id}'`; 
-    con.query(selQuery, (err, result) => // executing the above query
+ 
+exports.DownloadAttachment = async (req, res) => 
+{
+    let tickets = await ticket.main.downloadattachment(req.params.id, res);
+    if(tickets)
     {
-        console.log(result);
-        console.log(req.params.id);
-        if(err) // IF any kind error came while fetching the attachment name
-        {
-            console.log('Error occurred while fetching the attachment name on the basis of ticket ID in the params', err);
-            res.status(500).send
-                ({
-                success: false,
-                code: 500,
-                message: 'Internal server error',
-            });
-        }
-        else
-        {
-           // console.log(result[0].image_name);
-           let filename = result[0].image_name; // Initializng the attachment name to filename variable
-           // console.log(filename);
-           let extname = path.extname(filename); // get the file extension
-           let basename = path.basename(filename, extname); // remove the extension from the filename
-           // __dirnam ---> This will give the path till the current file
-           // '..' --> The first (.) will take from this file. The Second (.) will take us from the controller folder. This file is inside the controller folder
-           // 'attachments' ---> The folder name were all the attachment is being stored. 
-           // The path is will take us inside the attachment folder
-           const attachmentFolder = path.join(__dirname, '..', 'attachments');  // The attachmentFolder will have the path where all the attachment have been stored at the time ticket creation 
-           const file = path.join(attachmentFolder, `${filename}`); // The code will join the path and filename which we have to download
-           // console.log(file); 
-           // The below fs.access is used to check whether we can access the file or not
-           fs.access(file, fs.constants.F_OK, (err) => 
-            {
-                if(err) // if any came at the time of check the accessibilty of the file or file is not available
-                { // this blopcl of code will be executed
-                    console.error(`${file} does not exist`);
-                    res.status(404).send
-                    ({
-                        success: false,
-                        code : 404,
-                        message: 'File not found',
-                    });
-                }
-                else
-                { // if file is present
-                    console.log(`${file} exists`);
-                    res.download(file, (err) =>  // this will used to download
-                    {
-                        if (err)
-                        {
-                            console.error('Error occurred while downloading file', err);
-                            res.status(500).send
-                            ({
-                                success: false,
-                                code: 500,
-                                message: 'Internal server error',
-                            });
-                        }
-                    });
-                }
-            });
-        }
-    });
+        res.status(200).send
+        ({
+            success : false,
+            code : 200,
+            message : 'Internal server error',
+            file : tickets
+        });  
+
+    }
+    else if (tickets == 500)
+    {
+        res.status(500).send
+        ({
+            success : false,
+            code : 500,
+            message : 'Internal server error',
+        });        
+    }
+    else if(tickets == 404)
+    {
+        res.status(404).send
+        ({
+            success: false,
+            code : 404,
+            message: 'File not found',
+        });
+    }
+
 };
 
 

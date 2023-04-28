@@ -5,12 +5,12 @@ const { emailvalidation } = require("../middlewares/email.middleware"); // impor
 module.exports = function(app)
 {
     // This route is for the reporter message side
-    app.post('/add/repo/mess/:id',emailvalidation, verifyparams.TicketIdIsCorrectInParams, messagecontroller.ReporterMessage);
+    app.post('bugtracker/api/add/repo/mess/:id',emailvalidation, verifyparams.TicketIdIsCorrectInParams, messagecontroller.ReporterMessage);
     // This route is for the assignee message side
-    app.post('/add/ass/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.AssigneeMessage);
+    app.post('bugtracker/api/add/ass/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.AssigneeMessage);
     // This route is for admin message side
-    app.post('/add/admin/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.AdminMessage);
+    app.post('bugtracker/api/add/admin/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.AdminMessage);
     // This route will give all the message based on the particular ticket
-    app.get('/all/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.GetAllMessageSendOnParticularTicket)
+    app.get('bugtracker/api/all/mess/:id', verifyparams.TicketIdIsCorrectInParams, messagecontroller.GetAllMessageSendOnParticularTicket)
 };
 

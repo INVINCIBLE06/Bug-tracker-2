@@ -11,8 +11,8 @@ exports.SendGeneratedValue = (recipient, subject, description) =>
             host : "smtp.gmail.com",
             auth :
             {
-                user : process.env.adminemail, // replace with your email address
-                pass : process.env.password // replace with your email password
+                user : process.env.app_email, // replace with your email address
+                pass : process.env.app_password // replace with your email password
             },
             secure : true,
         });

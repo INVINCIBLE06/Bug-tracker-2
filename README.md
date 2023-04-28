@@ -8,7 +8,7 @@ This project contains the Node.js back-end code for a bug tracker application th
 
 `Role Creation`
 
-- In this application, the 'ADMIN' role can be created from the backend.
+- In this application, the 'ADMIN' role will be created from the backend.
 - Once created, the admin can create additional roles.
 - Only the admin has the authority to create roles.
 - The admin can perform operations such as deleting, updating, and reading all roles at once.
@@ -24,7 +24,8 @@ This project contains the Node.js back-end code for a bug tracker application th
 
 - When a user logs in, a token is sent in the response.
 - We store the login time and logout time of every user.
-- We keep track of all user login and logout times in the database.
+- So that 'ADMIN' can keep track of all user login and logout times in the database.
+- Every user can also get details of their total login time.
 - If the user enters the wrong password, we store the count in the database.
 - If a user enters the wrong password five times in a row, their account will be blocked for 24 hours.
 - We also store the count even if the user has not entered the wrong password five times.
@@ -108,7 +109,6 @@ This project contains the Node.js back-end code for a bug tracker application th
 - Express
 - Mysql
 
-
 ## Dependencies
 
 |npm modules|
@@ -123,9 +123,6 @@ This project contains the Node.js back-end code for a bug tracker application th
 |jsonwebtoken|
 |date-and-time|
 |express-fileupload|
-
-
-
 
 
 ## Installation
@@ -143,9 +140,6 @@ This project contains the Node.js back-end code for a bug tracker application th
   npm install
   npm run dev  
 ```
-
-
-    
 ## Environment Variables (.env)
 
 To run this project, you will need to add a .env file to the root directory of the project. This file should contain any necessary environment variables, such as database credentials or API keys. To create the .env file, simply create a new file in the root directory of the project and name it .env. Then add the required environment variables with their corresponding values. We store sensitive information in this file.
@@ -189,29 +183,16 @@ To run this project, you will need to add a .env file to the root directory of t
 
 - Since we are enabling our software to send emails, we are using SMTP.
 - To use SMTP, we need to create an application in an email service provider and obtain an ID and password. This will be required to send emails directly from our server.
+
+```bash
+1. app_email - 'Application email from where STMP application created'
+2. app_password - 'Application password, it will given by google when you create SMTP application'
+```
+
 ## Rest endpoints
 
-#### Get all items
+>**User creation**
 
-```http
-  GET /api/items
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
-
-#### Get item
-
-```http
-  GET /api/items/${id}
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **Required**. Id of item to fetch |
-
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
-
+- **Sign-up**<br/>
+`POST /crm/api/v2/auth/signup`<br/>
+Register user with name, userId, email, password and user type.<br/><br/>

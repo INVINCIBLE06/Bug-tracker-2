@@ -36,7 +36,7 @@ exports.token = (unique, id, purpose) =>
 
 exports.CreateLink = (purpose, token) =>
 {
-    let link = `${process.env.APP_URL}/bugtracker/${purpose}/${token}` ;
+    let link = `${process.env.APP_URL}/bugtracker/api/${purpose}/${token}` ;
     return link;
 }
 

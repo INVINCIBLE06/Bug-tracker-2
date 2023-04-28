@@ -169,64 +169,8 @@ const    main = class ticket
         });
     };
 
-    /**
-     * The below function is return the update of tikcet after 2 days.
-     * But we have to execute this function for the update of ticket prioruity
-     * There are 2 type of priority (NORMAL, URGENT)
-     * While creating the ticket it is By default is NORMAL
-     */
-    static AutomaticUpdateticketAfterParticularTime()
-    {
-        return new Promise((resolve, reject)=>
-        { // the below route will give us all the ticket which have differenc in created at ticket and expired at ticket. All the tickets have that so all the ticket will go for the check
-            let selQuery = `SELECT * from tickets WHERE DATEDIFF(expired_at, created_at)`;
-            con.query(selQuery, (err, result)=> // executing the above query
-                {
-                    if(result) // if successfully got the result of above query then it will go inside the if block
-                    { // the below for loop while run for all the ticket    
-                        for(let i = 0 ; i < result.length; i++)
-                            {
-                                const today = new Date(); // initializng the today variable with the current system date
-                                if(result[i].expired_at > today) // if the exipred date is still greater than todays date
-                                    { // then that ticket have not crossed the deadline. So it not update
-                                        console.log(`Ticketid ${result[i].id} have not croosed it's deadline`);
-                                        continue; // this will make the loop work with out effecting anyhthing                                                                            
-                                    }
-                                else if(result[i].expired_at < nowd() && result[i].priority == constants.priority.urgent) // Here we are checking whether the ticket have crossed the exipred date and status of that ticket is already URGENT
-                                    { // we don't have change it's status because it is already set on urgent priority
-                                        console.log(`Ticketid ${result[i].id} priority is already update`);                                
-                                    }
-                                else
-                                    { // the below query will used for updating those ticket. Who have crossed the deadlin and their status is NORMAL
-                                        let upQuery = `UPDATE tickets t SET t.priority ='${constants.priority.urgent}' WHERE ${result[i].id} = t.id`;
-                                        con.query(upQuery,(err1, result1) => // executing the above query
-                                            { 
-                                                if(result1) // if the query is successfully executed and we have any result than the code inside the if block willbe executed
-                                                    {
-                                                        console.log(`Ticketid ${result[i].id} priority is changed`);
-                                                        resolve('true');  // result sent back to the controller. From where it is called                                                      
-                                                    }
-                                                else // Error while executing the if block
-                                                    {
-                                                        console.log("Error while updating the ticket priority")
-                                                        reject(err1); // error will send back to the controller. From where it is called
-                                                    }
-                                            });
-                                    } 
-                            } // closing of this for loop
-                    resolve('true'); // result sent back to the controller. From where it is called           
-                    }// if error encountered while getting the exipred ticket
-                    else
-                    {
-                        reject(err); // error will send back to the controller. From where it is called
-                    }
-                });
-        });
-    };
-
-
     // the below function will give us all the ticet that are assigned to a particular engineer. We need assignee email in params
-    static getAssignedTicket(assignee) // getting the assignee email in assignee variabel
+    static getassignedticket(assignee) // getting the assignee email in assignee variabel
     {
         return new Promise((resolve, reject) =>
         {
@@ -678,7 +622,8 @@ const    main = class ticket
     static allticketactivityreport()
     {
         return new Promise((resolve, reject)=>
-        {// the below will give us the ticket activity.
+        {
+            // the below will give us the ticket activity.
                 let selQuery = `SELECT 
                                 t.id AS Ticket_id,
                                 t.title AS Ticket_title,
@@ -717,7 +662,79 @@ const    main = class ticket
         });
     };
 
+    static downloadattachment(id, res)
+    {
+        return new Promise((resolve, reject)=>
+        {
+            try
+            {
+                // The below query will give us the image name of the attachment which was there in the databse for the ticket id entered in the params.
+                let selQuery = ` SELECT t.image_name FROM tickets t WHERE t.id = '${id}' `; 
+                con.query(selQuery, (err, result) => // executing the above query
+                {
+                    // console.log(result);
+                    // console.log(id);
+                    if(err) // IF any kind error came while fetching the attachment name
+                    {
+                        console.log('Error occurred while fetching the attachment name on the basis of ticket ID in the params', err);
+                        resolve(500);
+                    }
+                    else
+                    {
+                        // console.log(result[0].image_name);
+                        let filename = result[0].image_name; // Initializng the attachment name to filename variable
+                        // console.log(filename);
+                        let extname = path.extname(filename); // get the file extension
+                        let basename = path.basename(filename, extname); // remove the extension from the filename
+                        // __dirnam ---> This will give the path till the current file
+                        // '..' --> The first (.) will take from this file. The Second (.) will take us from the controller folder. This file is inside the controller folder
+                        // 'attachments' ---> The folder name were all the attachment is being stored. 
+                        // The path is will take us inside the attachment folder
+                        const attachmentFolder = path.join(__dirname, '..', 'attachments');  // The attachmentFolder will have the path where all the attachment have been stored at the time ticket creation 
+                        const file = path.join(attachmentFolder, `${filename}`); // The code will join the path and filename which we have to download
+                        //  console.log(file); 
+                        // The below fs.access is used to check whether we can access the file or not
+                        fs.access(file, fs.constants.F_OK, (err) => 
+                        {
+                            if(err) // if any came at the time of check the accessibilty of the file or file is not available
+                            { 
+                                // This block of code will be executed
+                                console.error(`${file} does not exist`);
+                                resolve(404);
+                            }
+                            else
+                            {
+                                // if file is present
+                                console.log(`${file} exists`);
+                                res.download(file, (err) =>  // this will used to download
+                                {
+                                    if (err)
+                                    {
+                                        console.error('Error occurred while downloading file', err);
+                                        resolve(500);
+                                    }
+                                    else
+                                    {
+                                        resolve(true);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            catch(error)
+            {
+                console.error('An error occurred', error);
+                reject(500);
+            }
+        });
+    }
+
+
+
 };
+
 
 // The below arrow function is used for adding data in expired date column. The expired date column have the 2 days plus date of ticekt created date
 const DAYADD = (plus) =>

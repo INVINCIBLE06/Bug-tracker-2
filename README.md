@@ -6,7 +6,42 @@ This project contains the Node.js back-end code for a bug tracker application th
 
 ## Features
 
-~~ Account creation ~~
+`Role Creation`
+
+- In this application, the 'ADMIN' role can be created from the backend.
+- Once created, the admin can create additional roles.
+- Only the admin has the authority to create roles.
+- The admin can perform operations such as deleting, updating, and reading all roles at once.
+
+`Account Creation`
+
+- When a new user is created, their email will be unverified. The user must verify their email before they can use other functionalities.
+- After the user enters all the information, it will be inserted into the database.
+- All users will be registered as 'ACTIVE' because they are being added by the 'ADMIN' themselves.
+- JSON Web Token used for authentication.
+
+`Password Reset Or Changing`
+
+- Password changing can happen in a number of ways.
+- When a user registers through the 'ADMIN', we also store their security answer.
+- To change their password, the user will need to provide their email, security answer, new password, and confirm the new password. If all the information is correct, then the password will be updated.
+- Updating a user's password can also be done by providing the user's email in the request parameters. This feature is primarily intended for use in the frontend of the application.
+- We can update the password using a reset password link.
+- The user ID is required in the parameters to generate the password reset link.
+- The link will be sent to the registered email address.
+- When the link is used, the user will be prompted to enter a new password and confirm it. This will update the password in the database.
+- The link will be valid for a specified number of minutes.
+- The password reset link will only work if the email address is verified.
+
+`Email Sending Or Communication`
+
+- We are using email communication in several places.
+- The following are the places where we are using email communication:
+- For email verification, we send an email to the user.
+- For password changing, we send an email to the user.
+- When a ticket is assigned to a user, we send an email notification to the user.
+- We can send emails from anywhere in the application, as it is a separate file that only requires the recipient's email, subject, and description.
+
 ## Prerequisite
 
 - Basic knowledge of Node.js.
@@ -64,7 +99,7 @@ This project contains the Node.js back-end code for a bug tracker application th
 
 To run this project, you will need to add a .env file to the root directory of the project. This file should contain any necessary environment variables, such as database credentials or API keys. To create the .env file, simply create a new file in the root directory of the project and name it .env. Then add the required environment variables with their corresponding values. We store sensitive information in this file.
 
-~~ `Database and PORT details`
+`Database and PORT details`
 
 - Please enter the port number where you want to run your application.
 - In the sixth step, after entering the localhost, you need to specify the port number where you want to run your application.
@@ -78,7 +113,7 @@ To run this project, you will need to add a .env file to the root directory of t
   5. PORT - 'Port number where you want to make this application'
   6. APP_URL - 'http://localhost:(PORTNUMBER)' 
 ```
-~~ `First Admin Details`
+`First Admin Details`
 
 - The following seven steps describe how to add the first admin details from the backend:
     - Step 1: Enter the admin email.
@@ -99,7 +134,7 @@ To run this project, you will need to add a .env file to the root directory of t
 7. adminconfirmpassword - 'Admin confirmpassword
 ```
 
-~~ `Application Password`
+`Application Password`
 
 - Since we are enabling our software to send emails, we are using SMTP.
 - To use SMTP, we need to create an application in an email service provider and obtain an ID and password. This will be required to send emails directly from our server.

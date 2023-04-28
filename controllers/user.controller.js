@@ -62,6 +62,7 @@ exports.getallusers = async(req, res, next) =>
             }) 
     }
 };
+
 // the below controller is for getting all the user information with the looged user. It is done on the basis of user id in params
 
 exports.GetAllUserWithOutTheLoggedOne = async(req, res, next) => 

@@ -193,6 +193,91 @@ To run this project, you will need to add a .env file to the root directory of t
 
 >**User creation**
 
-- **Sign-up**<br/>
-`POST /crm/api/v2/auth/signup`<br/>
-Register user with name, userId, email, password and user type.<br/><br/>
+- **User-Registration**<br/>
+`POST bugtracker/api/add/new/user`<br/>
+Register user with name, email, mobile, date_of_birth, security_answer, password, confirm_password, role, and module.<br/><br/>
+
+- **Sign-In**<br/>
+`POST bugtracker/api/login/exist/user`<br/>
+User Sign-in using userId and password.<br/><br/>
+<br/><br/>
+
+- **Sign-Out**<br/>
+`POST bugtracker/api/logout/exist/user/:id`<br/>
+User Sign-out using userId in Params. We are doing this to store the logout and total log time in the database. <br/><br/>
+<br/><br/>
+
+- **Activity**<br/>
+`GET bugtracker/api/user/activity/log/:id`<br/>
+This route will give the total activity by a particular user. Whose Id is in the params. Activity consist of login, logout, total time.<br/><br/>
+<br/><br/>
+
+- **Password Update 1**<br/>
+`PUT bugtracker/api/forgot/pass/new/pass`<br/>
+This route will be for updating password. We need to enter email, security answer(Question - Who is you childhood hero ?), password, confirm password.<br/><br/>
+<br/><br/>
+
+- **Get All Users**<br/>
+`GET bugtracker/api/get/all/user`<br/>
+This route will give details of all the users available in the database.<br/><br/>
+<br/><br/>
+
+- **Get Single Users**<br/>
+`GET bugtracker/api/get/one/user`<br/>
+This route will give the details of one particular users. We need to enter email in the body. <br/><br/>
+<br/><br/>
+
+- **Check Security Answer**<br/>
+`GET bugtracker/api/check/security/:email`<br/>
+This route will check the security answer. We need to enter security answer in the body and email in the params.<br/><br/>
+<br/><br/>
+
+- **Update Password 2**<br/>
+`PUT bugtracker/api/update/password/:email`<br/>
+This route will be updating the password. Basically this is made for the front end. It was like first we will check only email, after that email security answer, if eboth true then update password. We need to enter email in params. Whose password have to be changed. Password and confirm password in the body.<br/><br/>
+<br/><br/>
+
+- **Get All Active Engineer**<br/>
+`GET bugtracker/api/get/all/active/engineer`<br/>
+This route will give details of all the active engineer available in the database.<br/><br/>
+<br/><br/>
+
+- **Updating User Status**<br/>
+`PUT bugtracker/api/update/user/status/:id`<br/>
+This route will be used for updating the status of users from active to inactive or viceversa.<br/><br/>
+<br/><br/>
+
+- **All User Detail Without The Logged One**<br/>
+`GET bugtracker/api/get/all/user/not/logged/one/:id `<br/>
+This route will give us all the users details except the user whose user_Id is in the params. This will be usefull when there are more than one ADMIN user. So one ADMIN cannot change other ADMIN data.<br/><br/>
+<br/><br/>
+
+- **Check Or Validating OTP**<br/>
+`POST bugtracker/api/validate/otp/:id `<br/>
+This route will be used for checking the OTP. The user need to enter OTP in the body and user_Id in the params.<br/><br/>
+<br/><br/>
+
+- **For Generating And Sending Registered Email**<br/>
+`POST bugtracker/api/user/send/otp `<br/>
+This route will be used for generating six digit unique code and send it to the email. The user needs to enter the email first in the body. <br/><br/>
+<br/><br/>
+
+- **For Generating Password Reset Link**<br/>
+`GET bugtracker/api/get/reset/password/link/:id `<br/>
+This route will be used for generating password reset link. We need to enter user_Id in the params. <br/><br/>
+<br/><br/>
+
+- **For Generating Email Verification Link**<br/>
+`GET /bugtracker/api/email/verfication/link/:id `<br/>
+This route will be used for generating email verification link. We need to enter user_Id in the params. <br/><br/>
+<br/><br/>
+
+- **Verifying User Email Through Link**<br/>
+`GET /bugtracker/api/emailVerfication/:token `<br/>
+This route will be used for verifying our email.<br/><br/>
+<br/><br/>
+
+- **Updating Password 3**<br/>
+`GET /bugtracker/api/Passwordreset/:token `<br/>
+This route will be used for updating our password. We need to add password and confirm password in params. <br/><br/>
+<br/><br/>

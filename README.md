@@ -191,7 +191,7 @@ To run this project, you will need to add a .env file to the root directory of t
 
 ## Rest endpoints
 
->**User creation**
+>**User**
 
 - **User-Registration**<br/>
 `POST bugtracker/api/add/new/user`<br/>
@@ -209,10 +209,6 @@ User Sign-out using userId in Params. We are doing this to store the logout and 
 `GET bugtracker/api/user/activity/log/:id`<br/>
 This route will give the total activity by a particular user. Whose Id is in the params. Activity consist of login, logout, total time.<br/>
 
-- **Password Update 1**<br/>
-`PUT bugtracker/api/forgot/pass/new/pass`<br/>
-This route will be for updating password. We need to enter email, security answer(Question - Who is you childhood hero ?), password, confirm password.<br/>
-
 - **Get All Users**<br/>
 `GET bugtracker/api/get/all/user`<br/>
 This route will give details of all the users available in the database.<br/>
@@ -224,10 +220,6 @@ This route will give the details of one particular users. We need to enter email
 - **Check Security Answer**<br/>
 `GET bugtracker/api/check/security/:email`<br/>
 This route will check the security answer. We need to enter security answer in the body and email in the params.<br/>
-
-- **Update Password 2**<br/>
-`PUT bugtracker/api/update/password/:email`<br/>
-This route will be updating the password. Basically this is made for the front end. It was like first we will check only email, after that email security answer, if eboth true then update password. We need to enter email in params. Whose password have to be changed. Password and confirm password in the body.<br/>
 
 - **Get All Active Engineer**<br/>
 `GET bugtracker/api/get/all/active/engineer`<br/>
@@ -261,6 +253,22 @@ This route will be used for generating email verification link. We need to enter
 `GET /bugtracker/api/emailVerfication/:token `<br/>
 This route will be used for verifying our email.<br/>
 
+>**Password Updation**
+
+- **Password Update 1**<br/>
+`PUT bugtracker/api/forgot/pass/new/pass`<br/>
+This route will be for updating password. We need to enter email, security answer(Question - Who is you childhood hero ?), password, confirm password.<br/>
+
+- **Update Password 2**<br/>
+`PUT bugtracker/api/update/password/:email`<br/>
+This route will be updating the password. Basically this is made for the front end. It was like first we will check only email, after that email security answer, if both true then update password. We need to enter email in params. Whose password have to be changed. Password and confirm password in the body.<br/>
+
 - **Updating Password 3**<br/>
 `GET /bugtracker/api/Passwordreset/:token `<br/>
-This route will be used for updating our password. We need to add password and confirm password in params. <br/>
+This route will be used for updating our password. We need to add password and confirm password in params.<br/>
+
+>**Role**
+
+- **Creation**<br/>
+`GET /bugtracker/api/Passwordreset/:token `<br/>
+This route will be used for updating our password. We need to add password and confirm password in params.<br/>

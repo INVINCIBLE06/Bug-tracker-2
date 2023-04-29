@@ -200,13 +200,9 @@ Register user with name, email, mobile, date_of_birth, security_answer, password
 - **Sign-In**<br/>
 `POST bugtracker/api/login/exist/user`<br/>
 User Sign-in using userId and password.<br/><br/>
-<br/><br/>
-
 - **Sign-Out**<br/>
 `POST bugtracker/api/logout/exist/user/:id`<br/>
 User Sign-out using userId in Params. We are doing this to store the logout and total log time in the database. <br/><br/>
-<br/><br/>
-
 - **Activity**<br/>
 `GET bugtracker/api/user/activity/log/:id`<br/>
 This route will give the total activity by a particular user. Whose Id is in the params. Activity consist of login, logout, total time.<br/><br/>

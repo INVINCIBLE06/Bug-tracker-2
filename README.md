@@ -233,6 +233,8 @@ This route will be used for updating the status of users from active to inactive
 `GET bugtracker/api/get/all/user/not/logged/one/:id `<br/>
 This route will give us all the users details except the user whose user_Id is in the params. This will be usefull when there are more than one ADMIN user. So one ADMIN cannot change other ADMIN data.<br/>
 
+>**Email And OTP**
+
 - **Check Or Validating OTP**<br/>
 `POST bugtracker/api/validate/otp/:id `<br/>
 This route will be used for checking the OTP. The user need to enter OTP in the body and user_Id in the params.<br/>

@@ -196,10 +196,9 @@ To run this project, you will need to add a .env file to the root directory of t
 - **User-Registration**<br/>
 `POST bugtracker/api/add/new/user`<br/>
 Register user with name, email, mobile, date_of_birth, security_answer, password, confirm_password, role, and module.<br/><br/>
-
 - **Sign-In**<br/>
 `POST bugtracker/api/login/exist/user`<br/>
-User Sign-in using userId and password.<br/><br/>
+User Sign-in using userId and password.<br/>
 - **Sign-Out**<br/>
 `POST bugtracker/api/logout/exist/user/:id`<br/>
 User Sign-out using userId in Params. We are doing this to store the logout and total log time in the database. <br/><br/>

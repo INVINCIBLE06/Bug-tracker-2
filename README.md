@@ -269,8 +269,93 @@ This route will be updating the password. Basically this is made for the front e
 `GET /bugtracker/api/Passwordreset/:token `<br/>
 This route will be used for updating our password. We need to add password and confirm password in params.<br/>
 
+>**Ticket**
+
+- **Creation**<br/>
+`POST bugtracker/api/create/ticket/new `<br/>
+This route is intended for creating new tickets.<br/>
+
+- **Fetching All Ticket**<br/>
+`GET bugtracker/api/get/all/ticket `<br/>
+This route is intended for retrieving all tickets from the database.<br/>
+
+- **Fetching All Assigned Ticket**<br/>
+`GET bugtracker/api/get/all/assigned/ticket/:assignee `<br/>
+This route will be be for engineer basically. This route will give us all the tickets. Which is assigned to a particular user. We have to give the user email id in the params.<br/>
+
+- **Fetching All Reported Ticket**<br/>
+`GET bugtracker/api/get/all/created/ticket/:reporter `<br/>
+This route is intended for all users and will provide us with all tickets created by a specific user. The user's email address should be provided as a parameter.<br/>
+
+- **Changing Ticket Status**<br/>
+`PUT bugtracker/api/started/working/ticket/:id `<br/>
+This route is intended for updating the status of tickets. To utilize this route, the ticket ID should be provided as a parameter. By default, when a ticket is created, its status is set to "OPEN". When an ENGINEER begins working on the ticket, the status can be updated to "WORKING". The final status update an ENGINEER can make is "RESOLVED". Only an ADMIN has the authority to close a ticket.<br/>
+
+- **Fetching All Resolved Ticket**<br/>
+`GET bugtracker/api/get/all/resolved/ticket `<br/>
+This route is intended for retrieving all resolved tickets.<br/>
+
+- **Changing Ticket Status To Closed**<br/>
+`GET bugtracker/api/changed/ticket/closed/:id`<br/>
+This route is intended for updating the status of a ticket to "CLOSED". Only an ADMIN has the authority to CLOSE a ticket, and this route should be utilized for that purpose.<br/>
+
+- **Fetching Ticket Where Working Is Not Started**<br/>
+`GET bugtracker/api/notstatrtedworking/priority/urgent/ticket`<br/>
+This route is intended for retrieving tickets that are still in "OPEN" status with a priority level of "NORMAL". By default, when a ticket is created, its priority level is set to "NORMAL". However, if no work has been started on a particular ticket, the priority level will be updated to "URGENT".<br/>
+
+- **Fetching All Urgent Priority Ticket**<br/>
+`GET bugtracker/api/urgent/priority/tickets `<br/>
+This route is intended for retrieving all URGENT priority level tickets.<br/>
+
+- **Fetching Detail Report Of a Particlular Ticket**<br/>
+`GET bugtracker/api/ticket/report/:id `<br/>
+This route is intended for retrieving a specific ticket report. To utilize this route, the ticket ID should be provided as a parameter.<br/>
+
+- **Fetching Detail Report Of All Ticket**
+`GET bugtracker/api/all/ticket/report` </br>
+This route is intended for retrieving all tickets report.<br/>
+
+- **Downloading The Attachment**
+`GET bugtracker/api/file-download/:id`</br>
+This route is intended for downloading the attachement of a ticket.<br/>
+
+
 >**Role**
 
 - **Creation**<br/>
-`GET /bugtracker/api/Passwordreset/:token `<br/>
-This route will be used for updating our password. We need to add password and confirm password in params.<br/>
+`POST bugtracker/api/add/new/role `<br/>
+This route will be used for creating the roles<br/>
+
+- **Updation**<br/>
+`PUT bugtracker/api/update/role/name `<br/>
+This route will be used for updating the role <br/>
+
+- **Delete**<br/>
+`DELETE bugtracker/api/delete/role `<br/>
+This route will be used for deleting the role <br/>
+
+- **Get All**<br/>
+`GET bugtracker/api/all/role `<br/>
+This route will be used for fetching all the roles from the database <br/>
+
+>**Module**
+
+- **Creation**<br/>
+`GET bugtracker/api/add/new/module `<br/>
+This route will be used for creating the module<br/>
+
+- **Updation**<br/>
+`PUT bugtracker/api/update/module/name `<br/>
+This route will be used for updating the module <br/>
+
+- **Delete**<br/>
+`DELETE bugtracker/api/delete/module `<br/>
+This route will be used for deleting the module <br/>
+
+- **Get All**<br/>
+`GET bugtracker/api/all/active/module `<br/>
+This route will be used for fetching all the modules from the database <br/>
+
+- **Updating the Module Status**<br/>
+`PUT bugtracker/api/update/module/status `<br/>
+This route will be used for updating the status of modules. <br/>

@@ -311,11 +311,11 @@ This route is intended for retrieving all URGENT priority level tickets.<br/>
 `GET bugtracker/api/ticket/report/:id `<br/>
 This route is intended for retrieving a specific ticket report. To utilize this route, the ticket ID should be provided as a parameter.<br/>
 
-- **Fetching Detail Report Of All Ticket**
+- **Fetching Detail Report Of All Ticket**<br/>
 `GET bugtracker/api/all/ticket/report` </br>
 This route is intended for retrieving all tickets report.<br/>
 
-- **Downloading The Attachment**
+- **Downloading The Attachment**<br/>
 `GET bugtracker/api/file-download/:id`</br>
 This route is intended for downloading the attachement of a ticket.<br/>
 

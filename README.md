@@ -116,9 +116,9 @@ This project contains the Node.js back-end code for a bug tracker application th
 |uuid|
 |dotenv|
 |mysql2|
-|nodemon|
-|bcryptjs|
 |readline|
+|bcryptjs|
+|nodemon|
 |nodemailer|
 |jsonwebtoken|
 |date-and-time|

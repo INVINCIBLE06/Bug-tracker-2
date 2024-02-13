@@ -27,6 +27,7 @@ exports.AddNewRoloe = async(req, res, next)=>
         });
     }
 }
+
 //The below function used for updating the role name 
 exports.updateRolename = async(req, res, next)=>
 {
@@ -77,7 +78,6 @@ exports.deleteRole = async(req, res, next)=>
 };
 
 // This route will give us all the role
-
 exports.getallrole = async(req, res, next) => 
 {
     let roles = await role.getallrole();

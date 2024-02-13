@@ -36,7 +36,6 @@ exports.AddNewTicket = async(req, res, next)=>
  * This is the code of that part
  * it is user to ticket
  */
-
 exports.GetAllTic = async(req, res, next) => 
 {
     let tickets = await ticket.main.getalltic();
@@ -88,7 +87,6 @@ exports.GetAssignedTicket = async(req, res, next) =>
 };
 
 // Below fucntion is for getting all the tickets which was created by that particular user
-
 exports.GetCreatedTicket = async(req, res, next) =>
 {
     let tickets = await ticket.main.getcreatedticket(req.params.reporter); // On the basis of reporter email id in the params
@@ -118,7 +116,6 @@ exports.GetCreatedTicket = async(req, res, next) =>
 /**
  * Below code has the code updatation of the ticket on the basis of the ticket id
  */
-
 exports.EngineerStartedWorkignOnTheTicket = async(req, res, next) =>
 {
     // Here will take message for user in the body and ticket id in the params for the updation. Message is required for updating the ticket
@@ -167,7 +164,6 @@ exports.EngineerStartedWorkignOnTheTicket = async(req, res, next) =>
 };
 
 // Below function will return us all the tickets which are having status as resolved
-
 exports.GetAllResolvedTicket = async(req, res, next) => 
 {
     let tickets = await ticket.main.getallresolvedticket();
@@ -222,7 +218,6 @@ exports.AdminWillChangeTheTicketStatusToClose = async (req, res) =>
 /**
  * The below block of code is used to get all the tickets where the ticket priority is urgent 
  */
-
 exports.GetAllUrgentPriorityTicket = async(req, res) =>
 {
     let tickets = await ticket.main.getallurgentpriorityticket();
@@ -260,7 +255,6 @@ exports.GetAllUrgentPriorityTicket = async(req, res) =>
 /**
  * The below function contain the code for ticket whose status is OPEN or PENDING but the priority is URGENT 
  */
-
 exports.PrioritySetToUrgentbutWorkNotStarted = async(req, res) =>
 {
     let tickets = await ticket.main.priorityspetourgentbutworknotstarted();
@@ -296,7 +290,6 @@ exports.PrioritySetToUrgentbutWorkNotStarted = async(req, res) =>
 };
 
 // The below function is for getting the tickets report for the particular who have created it
-
 exports.ParticularUserTicketActivityReport = async (req, res) =>
 {
     let tickets = await ticket.main.particularuserticketactivityreport(req.params.id);
@@ -322,6 +315,8 @@ exports.ParticularUserTicketActivityReport = async (req, res) =>
         });
     }
 }; 
+
+
 // The below function is for getting the ticket activity report for all the tickets available in the database 
 exports.AllTicketActivityReport = async (req, res) =>
 {

@@ -95,13 +95,4 @@ module.exports = class fetching
             });             
         });
     };
-
-
-
-
-
-
-
-
-
 };

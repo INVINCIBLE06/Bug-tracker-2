@@ -127,7 +127,7 @@ module.exports = class user
     }
 
 
-// The below function is for forgot password.
+    // The below function is for forgot password.
     static async forPas(email, security_answer, password, confirm_password) // The values which we are taking from the user email, security_answer, password, and confirm_password
     {
         try 
@@ -201,7 +201,6 @@ module.exports = class user
     };
 
     // The below function will retunr us the details of the single user. We will need to enter the email in the request body
-
     static getoneemaildetails(email) // assigning the email variable with the email in the request
     {
         return new Promise((resolve, reject)=>
@@ -259,6 +258,7 @@ module.exports = class user
             });
         });
     };
+    
     // the below function will give us all the active engineer present in the database.
     // There are two types of status one is active and another one is inactive
     static getallactiveengineer()
@@ -279,6 +279,7 @@ module.exports = class user
             });
         });
     };    
+    
     // The below code will be used for updating the user status (ACTIVE, INACTIVE);;
     static updateuserstatus(id) // This will be done on the basis of user id in the paramas
     {
@@ -365,7 +366,6 @@ module.exports = class user
             }
         });
     };
-
     
     // The below function will give us back all the registered users in the database
     static getalluserwithouttheloggedone(id)
@@ -491,10 +491,8 @@ module.exports = class user
         });        
     };
 
-
-// ------------------------------------------------------------------------------------------------------------------------------- // 
+    // ------------------------------------------------------------------------------------------------------------------------------- // 
     
-
     static sendresetlinkforchangingthepassword(password, id, email)
     {
         return new Promise(async (resolve, reject) =>
@@ -531,9 +529,7 @@ module.exports = class user
                 resolve(error);
             }            
         });
-    };
-
-    
+    };    
 
     static async resetpasswordthroughlink(id, password, confirm_password) 
     {

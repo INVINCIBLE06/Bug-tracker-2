@@ -1,6 +1,5 @@
 const date = require('date-and-time'); // importing the date-and-time library and assigning it to the date variables
 const { v4 : uuidv4 } = require('uuid'); // import uuid module for generating unique identifier 
-
 const con = require('../configs/db.config');  // importing the database details
 const constants = require('../utils/constants'); // Here we are importing the constants file details and intializing it into the constants variable
 const sendEmail = require('../utils/sendEmail');
@@ -211,7 +210,8 @@ const main = class ticket
             }
         });
     };
-// the below function will give us all the ticket created by the particular user. User can be any one. We will just need the email of that user in the params
+    
+    // the below function will give us all the ticket created by the particular user. User can be any one. We will just need the email of that user in the params
     static getcreatedticket(reporter) // The user email enteredin the params are now in the reporter variable
     {
         return new Promise((resolve, reject) =>
@@ -464,6 +464,7 @@ const main = class ticket
             }        
         });
     };
+    
     // the below function is for updating the ticket status from RESOLVED ---> CLOSED. Note :- This can only be done by the ADMIN users and this is done on the basis of ticket id 
     static adminwillchangetheticketstatustoclose(id, message) // we are getting the ticket id from the params and message from the req body
     {
@@ -578,7 +579,6 @@ const main = class ticket
             });
         });
     };
-
 
     static particularuserticketactivityreport(id)
     {
@@ -731,8 +731,6 @@ const main = class ticket
         });
     }
 
-
-
 };
 
 
@@ -763,8 +761,6 @@ const nowd = () => {
     return dateTime;
 };
 
-
-
 const convertDatePickerTimeToMySQLTime = (str) =>
 {
     var month, day, year, hours, minutes, seconds;
@@ -784,7 +780,6 @@ const convertUnixTimeIntoSimpleFormat = (value) =>
     const expDate = convertDatePickerTimeToMySQLTime(new Date(value * 1000).toLocaleString());
     return expDate;
 }
-
 
 const timeexportfunction = 
 {

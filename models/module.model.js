@@ -137,7 +137,7 @@ module.exports = class module
         }        
     }
 
-// This below line of code will be used for deleting the modue name. We need to pass the module name for deleting the module
+    // This below line of code will be used for deleting the modue name. We need to pass the module name for deleting the module
     static deletemodule(module_name)  // we are getting the module name 
     {
         try 

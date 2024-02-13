@@ -381,7 +381,6 @@ exports.ResetPasswordThroughLink = async (id, req, res, next ) =>
 };
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 exports.SendLinkForEmailVerfication = async (req, res) =>
 {
     let userDetails = await fetch.getUserDetailsByIdCondition(req.params.id);

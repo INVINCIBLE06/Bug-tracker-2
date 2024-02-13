@@ -4,6 +4,7 @@ const con = require('../configs/db.config');  // importing the database details
 module.exports = class role
 { 
     constructor(){}
+    
     // static addOne(name, author, price, adminid)
     static async addOneRole(role_name)  // here we are getting the rolename. Which was entered by the user in the req body
     { // This function is written for adding the role in the database

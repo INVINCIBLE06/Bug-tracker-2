@@ -4,6 +4,7 @@ const constants = require('../utils/constants');
 module.exports = class message
 {
     constructor(){}
+    
     static reportermessage(id, email, message)  // From here we are sending the message of the person who have created the ticket based on the ticket id
     {
         return new Promise((resolve, reject) =>
